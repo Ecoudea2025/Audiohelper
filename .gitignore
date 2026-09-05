@@ -5,6 +5,9 @@
 
 # Test / tooling artifacts
 .playwright-mcp/
+_audit*.py
+_patch*.py
+_find*.py
 *_old.html
 _merge.py
 _inspect*.py
