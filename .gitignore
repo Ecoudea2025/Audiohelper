@@ -1,0 +1,25 @@
+# Audio sources (keep only browser-ready MP3s)
+*.wma
+*.reapeaks
+*.peak
+
+# Test / tooling artifacts
+.playwright-mcp/
+*_old.html
+_merge.py
+_inspect*.py
+_scan*.py
+_dump.py
+_verify.py
+_findold.py
+_showline.py
+_patchfooter.py
+_favicon.py
+_home.html
+_home.css
+_router.js
+
+# OS junk
+.DS_Store
+Thumbs.db
+Desktop.ini
