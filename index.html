@@ -716,7 +716,7 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
     <p>Bienvenido al <strong>nivel MEDIUM</strong>. Aquí no hay introducciones amables — hay <strong>negociaciones hostiles, crisis y presión real</strong>. Si el nivel I era tutorial, esto es el juego. Escucha bajo presión. Sin transcript. Sin ayuda. Luego desencripta.</p>
     <div class="hero-stats">
       <div class="stat"><div class="stat-num">12</div><div class="stat-label">SECTORS // 1-12</div></div>
-      <div class="stat"><div class="stat-num" id="heroTotalM">68</div><div class="stat-label">ENCOUNTERS // MP3</div></div>
+      <div class="stat"><div class="stat-num" id="heroTotalM">71</div><div class="stat-label">ENCOUNTERS // MP3</div></div>
       <div class="stat"><div class="stat-num">⚠</div><div class="stat-label">DIFFICULTY // EXTREME</div></div>
     </div>
     <div class="search-wrap">
@@ -2006,11 +2006,58 @@ const MEDIUM_DATA=[
    ]},
   {id:"9.4", fileName:"9.4",
    sections:[{title:"Messages",lines:[
-     {speaker:"",text:"1  This is Jenny. I'm ringing about the conference. Great news! I've found a hotel with good rates. 2  Hi, This is Jason. I'm phoning about the management training course. 3  Oh hello. This is Carol. I'm ringing about next Friday's meeting. 4  Hi. This is Maria from Finance. I'm phoning about the budget."},
+     {speaker:"",text:"1  This is Jenny. I'm ringing about the conference. Great news! I've found a hotel with good rates. So how many rooms do you want to book?"},
+     {speaker:"",text:"2  Hi. This is Jason. I'm phoning about the management training course. I want to confirm my place on the course. By the way, who's leading it? Thanks."},
+     {speaker:"",text:"3  Oh hello. This is Carol. I'm ringing about next Friday's meeting. I've got two questions. Firstly, how many people will there be at the meeting and secondly, what time will it finish? OK? Bye."},
+     {speaker:"",text:"4  Hi. This is Maria from Finance. I'm phoning about the budget. How much did you spend on the Tokyo trip? I need to fill in the expenses claim by Friday."},
    ]}],
    vocabulary:[
      {phrase:"I'm ringing about",type:"expression",definition:"British: I'm calling about (phone)"},
      {phrase:"good rates",type:"word",definition:"Favourable hotel prices"},
+     {phrase:"fill in the expenses claim",type:"expression",definition:"Complete the form to get work costs refunded"},
+   ]},
+  {id:"9.5", fileName:"9.5", speakers:{A:"Alexandra",R:"Rachel"},
+   sections:[{title:"Evening plans",lines:[
+     {speaker:"A",text:"What are you planning this evening, Rachel?"},
+     {speaker:"R",text:"Nothing really. Maybe I'll look over my notes for tomorrow's presentation."},
+     {speaker:"A",text:"Look, why don't you relax a little? I'm going to a restaurant tonight with a few colleagues – you've met one or two of them – would you like to come with us? It's in the town centre. We could have a few drinks afterwards."},
+     {speaker:"R",text:"Well, it's very kind of you, Alexandra, but I think I'd like to relax at the hotel tonight, if you don't mind. I'm a bit tired, quite honestly."},
+     {speaker:"A",text:"Are you sure? You'd really enjoy it."},
+     {speaker:"R",text:"It's very kind of you, but perhaps another time."},
+   ]}],
+   vocabulary:[
+     {phrase:"why don't you relax a little?",type:"expression",definition:"Friendly suggestion to take a break"},
+     {phrase:"quite honestly",type:"expression",definition:"Speaking frankly; telling the true feeling"},
+     {phrase:"perhaps another time",type:"expression",definition:"Polite way to decline an invitation"},
+   ]},
+  {id:"9.6", fileName:"9.6", speakers:{M:"Marta",S:"Sven"},
+   sections:[{title:"Sweden spare time",lines:[
+     {speaker:"M",text:"I don't know too much about Sweden really, Sven. What do people here like doing in their spare time?"},
+     {speaker:"S",text:"Well, Marta, Swedish people like to be in the open air. They're very health conscious. So, they enjoy playing sports, football, tennis, skiing and ice-skating in the winter. And of course a lot of people have summer cottages, by the sea or lakes. So they go there at the weekends and relax, swim, go sailing, and so on."},
+     {speaker:"M",text:"Interesting. And what about you, Sven, what do you usually do after work? In the evenings?"},
+     {speaker:"S",text:"I usually watch television. And often I have a sauna with my family. We enjoy that a lot. How about you, Marta?"},
+     {speaker:"M",text:"Well, generally I spend time with my children, and read to them before they go to bed. After that, I sit down, chat to my husband, and then we argue about what to watch on television!"},
+   ]}],
+   vocabulary:[
+     {phrase:"health conscious",type:"expression",definition:"Someone who cares about staying healthy"},
+     {phrase:"summer cottages",type:"word",definition:"Holiday homes by the sea or lakes"},
+     {phrase:"have a sauna",type:"expression",definition:"Use a sauna, a common family habit in Nordic countries"},
+   ]},
+  {id:"9.7", fileName:"9.7", speakers:{M:"Marta",S:"Sven"},
+   sections:[{title:"Farewell",lines:[
+     {speaker:"M",text:"I've really enjoyed the trip, Sven. I'm sure we'll be doing a lot of business together in future."},
+     {speaker:"S",text:"Yes, there's a lot of potential in Sweden for your products, and we can help you build up sales here."},
+     {speaker:"M",text:"Good, I think so too. Thanks very much for your hospitality. I really enjoyed the meal tonight. And also thanks for showing me round the city yesterday. It was fascinating. I feel I know Stockholm a bit now."},
+     {speaker:"S",text:"I'm glad you enjoyed the tour, Marta. We're very proud of our city, as you may know. Well, I hope you have a good journey back. We'll be in touch soon, I'm sure."},
+     {speaker:"M",text:"Yes, I'll call you as soon as I've talked to my colleagues about your proposal. We'll take it from there."},
+     {speaker:"S",text:"Goodbye, Marta. All the best."},
+     {speaker:"M",text:"Bye, Sven."},
+   ]}],
+   vocabulary:[
+     {phrase:"a lot of potential",type:"expression",definition:"Great possibilities for future business"},
+     {phrase:"build up sales",type:"expression",definition:"Increase the amount of products sold"},
+     {phrase:"we'll be in touch soon",type:"expression",definition:"We'll contact each other again shortly"},
+     {phrase:"hospitality",type:"word",definition:"Friendly reception and treatment of guests"},
    ]},
   ]},
 {

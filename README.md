@@ -9,7 +9,7 @@ Interactive listening practice for the **CD Market** English course. Two levels 
 | Level | Theme | Content |
 |-------|-------|---------|
 | **Level I — Listening Lab** 🎧 | Calm light/dark design | 12 units (Introductions → Jobs) · **84 audios** with transcripts + vocabulary |
-| **Medium — Hostile Protocol** ⚠ | Neon dark "game" HUD | 12 sectors (Careers → Products) · **68 encounters** with transcripts + vocabulary |
+| **Medium — Hostile Protocol** ⚠ | Neon dark "game" HUD | 12 sectors (Careers → Products) · **71 encounters** with transcripts + vocabulary |
 
 ## Method: listen first, read later
 
