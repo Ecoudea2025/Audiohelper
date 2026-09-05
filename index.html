@@ -664,7 +664,7 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
   <div class="header-right">
     <button class="backbtn" data-home-link title="Back to level select">←</button>
     <div class="header-progress">
-      <span class="header-progress-label">Progress</span>
+      <span class="header-progress-label">XP</span>
       <div class="header-progress-bar"><div class="header-progress-fill" id="globalProgressI"></div></div>
       <span class="header-progress-count"><span id="completedCountI">0</span> / <span id="totalCountI">0</span></span>
     </div>
@@ -674,17 +674,17 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
 <main>
   <section class="hero">
     <div class="hero-inner">
-      <div class="hero-eyebrow"><span class="dot"></span> Listening-first methodology</div>
+      <div class="hero-eyebrow"><span class="dot"></span> Cozy Quest · Level I</div>
       <h1>Listen first,<br><em>understand later.</em></h1>
       <p id="heroQuoteI">Your ears are lazy. Train them — press play, no peeking at the transcript.</p>
       <div class="hero-stats">
-        <div class="hero-stat"><div class="hero-stat-num">12</div><div class="hero-stat-label"><strong>Units</strong><span>Introductions → Jobs</span></div></div>
-        <div class="hero-stat"><div class="hero-stat-num" id="heroTotalI">84</div><div class="hero-stat-label"><strong>Audios</strong><span>All MP3 ready</span></div></div>
+        <div class="hero-stat"><div class="hero-stat-num">12</div><div class="hero-stat-label"><strong>Worlds</strong><span>Introductions → Jobs</span></div></div>
+        <div class="hero-stat"><div class="hero-stat-num" id="heroTotalI">84</div><div class="hero-stat-label"><strong>Quests</strong><span>All MP3 ready</span></div></div>
         <div class="hero-stat"><div class="hero-stat-num">∞</div><div class="hero-stat-label"><strong>Practice</strong><span>At your pace</span></div></div>
       </div>
       <div class="search-wrap">
         <span class="search-icon">⌕</span>
-        <input class="search-input" id="searchInputI" type="text" placeholder="Search units, audios, vocabulary..." autocomplete="off">
+        <input class="search-input" id="searchInputI" type="text" placeholder="Search worlds, quests, words..." autocomplete="off">
       </div>
       
     </div>
@@ -2263,8 +2263,8 @@ function buildI(){
       <div class="unit-header" data-unit="${ui}" role="button" tabindex="0" aria-expanded="false">
         <div class="unit-icon" style="background:${unit.color}18;color:${unit.color};border:1px solid ${unit.color}30">${unit.icon}</div>
         <div class="unit-meta">
-          <div class="unit-name">Unit ${unit.unitNumber}: ${unit.unitName}</div>
-          <div class="unit-desc">${unit.desc} · ${unit.audios.length} audios</div>
+          <div class="unit-name">World ${unit.unitNumber} · ${unit.unitName}</div>
+          <div class="unit-desc">${unit.desc} · ${unit.audios.length} quests</div>
           <div class="unit-progress-row">
             <div class="unit-bar"><div class="unit-bar-fill" style="width:${pct}%;background:${unit.color}"></div></div>
             <span class="unit-count"><b style="color:${unit.color}">${done}</b> / ${unit.audios.length}</span>
@@ -2285,7 +2285,7 @@ function buildI(){
       card.dataset.audioId=audioId;
       card.dataset.unit=unit.unitNumber;
       card.dataset.fileName=audio.fileName;
-      card.dataset.search=`${audio.id} ${unit.unitName} ${speakersHeader} ${audio.sections.map(s=>s.title).join(' ')} ${(audio.vocabulary||[]).map(v=>v.phrase).join(' ')}`.toLowerCase();
+      card.dataset.search=`${audio.id} world ${unit.unitNumber} ${unit.unitName} ${speakersHeader} ${audio.sections.map(s=>s.title).join(' ')} ${(audio.vocabulary||[]).map(v=>v.phrase).join(' ')}`.toLowerCase();
 
       let transcriptHTML='';
       audio.sections.forEach(sec=>{
@@ -2318,16 +2318,16 @@ function buildI(){
         <div class="audio-progress"><div class="audio-progress-fill"></div></div>
         <div class="listen-panel">
           <div class="listen-icon">🎧</div>
-          <div class="listen-title">Listen carefully first</div>
-          <div class="listen-sub">Focus on what you hear. When you're ready to check yourself, reveal the transcript &amp; vocabulary.</div>
-          <button class="reveal-btn">👁 Reveal transcript & vocabulary</button>
+          <div class="listen-title">Get cozy &amp; listen first</div>
+          <div class="listen-sub">Snuggle up, press play, and just listen. The story unlocks when you're ready.</div>
+          <button class="reveal-btn">🔓 Unlock transcript &amp; words</button>
         </div>
         <div class="transcript" role="region">
           ${speakersHeader?`<div class="transcript-speakers">${speakersHeader}</div>`:''}
           ${transcriptHTML}
         </div>
-        ${vocabHTML?`<div class="vocab-section" role="region"><div class="vocab-head"><span class="dot"></span> Vocabulary — click a card to highlight it in the transcript</div><div class="vocab-grid">${vocabHTML}</div></div>`:''}
-        <div class="hide-wrap" style="display:none;padding:0 14px 14px;text-align:center"><button class="hide-btn">🙈 Hide transcript</button></div>`;
+        ${vocabHTML?`<div class="vocab-section" role="region"><div class="vocab-head"><span class="dot"></span> Word stickers — tap one to find it in the story</div><div class="vocab-grid">${vocabHTML}</div></div>`:''}
+        <div class="hide-wrap" style="display:none;padding:0 14px 14px;text-align:center"><button class="hide-btn">🙈 Hide the story</button></div>`;
       body.appendChild(card);
     });
   });
@@ -2799,7 +2799,7 @@ function buildM(){
       card.dataset.audioId=audioId;
       card.dataset.unit=unit.unitNumber;
       card.dataset.fileName=audio.fileName;
-      card.dataset.search=`${audio.id} ${unit.unitName} ${speakersHeader} ${audio.sections.map(s=>s.title).join(' ')} ${(audio.vocabulary||[]).map(v=>v.phrase).join(' ')}`.toLowerCase();
+      card.dataset.search=`${audio.id} world ${unit.unitNumber} ${unit.unitName} ${speakersHeader} ${audio.sections.map(s=>s.title).join(' ')} ${(audio.vocabulary||[]).map(v=>v.phrase).join(' ')}`.toLowerCase();
       let transcriptHTML='';
       audio.sections.forEach(sec=>{
         transcriptHTML+=`<div class="transcript-section"><div class="transcript-section-title">${sec.title}</div>`;
@@ -3304,6 +3304,79 @@ toTop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smoot
 })();
 </script>
 
+<style>
+/* ===== COZY QUEST reskin — Level I only (medium/home untouched) ===== */
+@keyframes cozy-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes cozy-wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg) scale(1.06)}75%{transform:rotate(8deg) scale(1.06)}}
+@keyframes cozy-pop{0%{transform:scale(.4)}60%{transform:scale(1.22)}100%{transform:scale(1.08)}}
+body[data-level="intro"]{
+  --bg:#F4F1FF;--bg2:#E9E2FB;--surface:#FFFFFF;--surface2:#FAF8FF;--surface-hover:#F0E9FF;
+  --accent:#7C5CFC;--accent-hover:#6845F5;--accent-light:#ECE5FF;--accent-glow:rgba(124,92,252,.22);
+  --accent-grad:linear-gradient(135deg,#8B5CF6 0%,#EC4899 100%);
+  --text:#251F3A;--text-sec:#5D5478;--text-muted:#9890B5;--text-faint:#C9C2E4;
+  --border:#E2D9F8;--border2:#CFC0F2;
+  --shadow-sm:0 2px 6px rgba(124,92,252,.07);--shadow-md:0 10px 28px rgba(124,92,252,.12);
+  --shadow-lg:0 18px 48px rgba(124,92,252,.16);--shadow-glow:0 8px 28px rgba(124,92,252,.28);
+  --vocab-bg:#F7F2FF;--vocab-border:#E2D4FB;--vocab-tag:#EDE6FF;--vocab-tag-txt:#6D3FD4;
+  --header-bg:rgba(244,241,255,.85);--header-border:rgba(226,217,248,.9);
+  --listen-bg:linear-gradient(155deg,#241D4D 0%,#3B2A6E 55%,#5B3A8C 100%);--listen-txt:#F2EDFF;--listen-accent:#FFD9A0;
+  --gold:#FFB020;--gold-soft:#FFF3D6;--mint:#22B07D;
+  --radius:18px;--radius-sm:12px;
+}
+body[data-level="intro"][data-theme="dark"]{
+  --bg:#16131F;--bg2:#1D1830;--surface:#221D3D;--surface2:#28224A;--surface-hover:#2F2760;
+  --accent:#A78BFA;--accent-hover:#C4B5FD;--accent-light:#2E2660;--accent-glow:rgba(167,139,250,.25);
+  --accent-grad:linear-gradient(135deg,#A78BFA 0%,#E879F9 100%);
+  --text:#F4F0FF;--text-sec:#BDB3E0;--text-muted:#877DAE;--text-faint:#575073;
+  --border:#38305E;--border2:#4E4484;
+  --shadow-sm:0 2px 6px rgba(0,0,0,.35);--shadow-md:0 10px 28px rgba(0,0,0,.4);
+  --shadow-lg:0 18px 48px rgba(0,0,0,.5);--shadow-glow:0 8px 28px rgba(167,139,250,.28);
+  --vocab-bg:#262052;--vocab-border:#453A85;--vocab-tag:#38306E;--vocab-tag-txt:#D3C2FF;
+  --header-bg:rgba(22,19,31,.85);--header-border:rgba(56,48,94,.9);
+  --listen-bg:linear-gradient(155deg,#171232 0%,#2A1D5E 60%,#3D2A7A 100%);--listen-txt:#F2EDFF;--listen-accent:#FFD9A0;
+  --gold:#FFB020;--gold-soft:#3A2E12;--mint:#2FD08F;
+}
+body[data-level="intro"]::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background-image:radial-gradient(rgba(124,92,252,.14) 1.5px,transparent 1.7px);background-size:24px 24px}
+body[data-level="intro"] .hero{border-radius:24px;border-width:2px;overflow:hidden}
+body[data-level="intro"] .hero::before{background:radial-gradient(ellipse 600px 300px at 20% -20%,rgba(139,92,246,.14) 0%,transparent 60%),radial-gradient(ellipse 500px 400px at 90% 120%,rgba(236,72,153,.10) 0%,transparent 60%),radial-gradient(rgba(124,92,252,.12) 1.5px,transparent 1.7px);background-size:auto,auto,22px 22px}
+body[data-level="intro"] .hero-eyebrow{background:var(--gold-soft);color:#8A5A00;border:1px solid var(--gold)}
+body[data-level="intro"][data-theme="dark"] .hero-eyebrow{color:var(--gold)}
+body[data-level="intro"] .hero-eyebrow .dot{background:var(--gold)}
+body[data-level="intro"] .hero-stat-num{border-radius:12px}
+body[data-level="intro"] .unit{border-width:2px;border-radius:22px;box-shadow:0 4px 0 var(--border2);transition:transform .25s var(--ease-out),box-shadow .25s var(--ease-out),border-color .25s}
+body[data-level="intro"] .unit:hover{transform:translateY(-3px);box-shadow:0 7px 0 var(--border2)}
+body[data-level="intro"] .unit.open{box-shadow:0 4px 0 var(--accent),0 12px 32px var(--accent-glow)}
+body[data-level="intro"] .unit-icon{border-radius:14px;border-width:2px}
+body[data-level="intro"] .unit-header:hover .unit-icon{animation:cozy-wiggle .5s ease}
+body[data-level="intro"] .unit-bar{height:8px;border-width:2px}
+body[data-level="intro"] .unit-bar-fill{background-image:repeating-linear-gradient(-55deg,rgba(255,255,255,.28) 0 6px,transparent 6px 12px)}
+body[data-level="intro"] .header-progress-fill{background-image:repeating-linear-gradient(-55deg,rgba(255,255,255,.28) 0 6px,transparent 6px 12px)}
+body[data-level="intro"] .header-progress-count::before{content:'★ ';color:var(--gold)}
+body[data-level="intro"] .audio-card{border-radius:18px;border-width:2px}
+body[data-level="intro"] .audio-card:hover{transform:translateY(-2px)}
+body[data-level="intro"] .audio-title code{border-radius:99px;border:1px solid var(--border2);padding:3px 9px}
+body[data-level="intro"] .audio-check{width:28px;height:28px}
+body[data-level="intro"] .audio-check.done{background:var(--mint);border-color:var(--mint);animation:cozy-pop .45s var(--ease-spring);box-shadow:0 0 0 4px rgba(34,176,125,.18)}
+body[data-level="intro"] .audio-check.done:hover{background:var(--mint);border-color:var(--mint)}
+body[data-level="intro"] .listen-panel{border-radius:18px;border:2px solid rgba(255,217,160,.35)}
+body[data-level="intro"] .listen-panel::before{background-image:radial-gradient(rgba(255,255,255,.4) 1px,transparent 1.6px),radial-gradient(ellipse 400px 200px at 50% 0%,rgba(255,217,160,.18) 0%,transparent 70%);background-size:22px 22px,auto}
+body[data-level="intro"] .listen-icon{animation:cozy-float 3s ease-in-out infinite}
+body[data-level="intro"] .reveal-btn{background:linear-gradient(135deg,#FFD166,#FF9F1C);color:#3A2503;border:2px solid rgba(255,255,255,.7);box-shadow:0 4px 0 rgba(0,0,0,.18)}
+body[data-level="intro"] .reveal-btn:hover{box-shadow:0 6px 0 rgba(0,0,0,.18)}
+body[data-level="intro"] .transcript-line{border-radius:8px}
+body[data-level="intro"] .transcript-line:hover{background:var(--accent-light)}
+body[data-level="intro"] .vocab-card{border-radius:14px;border-width:2px}
+body[data-level="intro"] .vocab-card:hover{transform:translateY(-2px) rotate(-.6deg)}
+body[data-level="intro"] .vocab-card::before{background:linear-gradient(90deg,var(--gold),#FF9F1C)}
+body[data-level="intro"] .vocab-card.active::before{background:linear-gradient(90deg,var(--gold),#FF9F1C)}
+body[data-level="intro"] .vocab-type{border-radius:99px}
+body[data-level="intro"] .search-input{border-radius:14px}
+body[data-level="intro"] .search-input:focus{box-shadow:0 0 0 4px var(--accent-glow)}
+body[data-level="intro"] .jumpchip{border-radius:99px;border-width:2px;font-weight:800}
+body[data-level="intro"] .unit-chevron{border-radius:10px;border-width:2px}
+body[data-level="intro"] .play-btn{box-shadow:0 4px 14px var(--accent-glow)}
+</style>
 <script>
 /* ============ HERO QUOTES: one random line per page load ============ */
 (function(){
