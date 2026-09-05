@@ -33,11 +33,3 @@ Audiohelper/
 ```
 
 > Paths are **relative** (`audio/…`), so the page works from any folder, any static host, or GitHub Pages. Keep `index.html` next to the `audio/` folder.
-
-## Deploy as a website (optional)
-
-This repo is GitHub Pages-ready: Settings → Pages → Deploy from branch → `main` → `/ (root)`. The site will be live at `https://<user>.github.io/Audiohelper/`.
-
-## Tech
-
-Single-file app: vanilla HTML + CSS + JS with GSAP, ScrollTrigger, Lenis, SplitType and anime.js via CDN (internet needed only for those libraries and fonts — audios always play offline).

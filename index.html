@@ -645,7 +645,7 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
         <button class="home-enter home-enter-medium" data-level-link="medium">ENTER MEDIUM →</button>
       </article>
     </div>
-    <p class="home-note">Progress saves automatically in your browser · Works offline from this folder — just open index.html · No server needed</p>
+    <p class="home-note">Progress auto-saves · 100% offline — just open index.html</p>
   </div>
 </section>
 
@@ -673,7 +673,7 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
     <div class="hero-inner">
       <div class="hero-eyebrow"><span class="dot"></span> Listening-first methodology</div>
       <h1>Listen first,<br><em>understand later.</em></h1>
-      <p>Your professor is right — reading while listening doesn't teach you to listen. Press play, focus on the audio, then reveal the transcript and vocabulary.</p>
+      <p id="heroQuoteI">Your ears are lazy. Train them — press play, no peeking at the transcript.</p>
       <div class="hero-stats">
         <div class="hero-stat"><div class="hero-stat-num">12</div><div class="hero-stat-label"><strong>Units</strong><span>Introductions → Jobs</span></div></div>
         <div class="hero-stat"><div class="hero-stat-num" id="heroTotalI">85</div><div class="hero-stat-label"><strong>Audios</strong><span>All MP3 ready</span></div></div>
@@ -683,13 +683,12 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
         <span class="search-icon">⌕</span>
         <input class="search-input" id="searchInputI" type="text" placeholder="Search units, audios, vocabulary..." autocomplete="off">
       </div>
-      <a href="medium.html" style="display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:10px 18px;background:var(--surface);border:1px solid var(--border);color:var(--text);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;letter-spacing:.1em;transition:all .2s">⚠ ENTER MEDIUM PROTOCOL →</a>
+      
     </div>
   </section>
   <div id="appI"></div>
   <footer class="footer">
-    CD Market Listening Lab · Built for focused practice · Audios converted to MP3 for browser compatibility<br>
-    Tip: complete an audio by listening to the end — progress is saved automatically.
+    CD Market · Listening Lab
   </footer>
 </main>
 </section>
@@ -3246,6 +3245,49 @@ window.npBuildJump=function(viewId,appId){
 var toTop=npEl('toTop');
 window.addEventListener('scroll',function(){toTop.classList.toggle('show',window.scrollY>600);},{passive:true});
 toTop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+})();
+</script>
+
+<script>
+/* ============ HERO QUOTES: rotating motivation one-liners ============ */
+(function(){
+var QUOTES=[
+"Your ears are lazy. Train them \u2014 press play, no peeking at the transcript.",
+"Reading while listening is cheating. Your professor knows. We know.",
+"84 audios. Zero excuses. Your future fluent self says thanks.",
+"Listening is a muscle. This is the gym. No pain, no gain.",
+"The transcript isn\u2019t going anywhere. Your ears, on the other hand\u2026",
+"Spoiler alert: the answers stay hidden until you actually listen.",
+"One audio a day keeps the \u2018sorry, what?\u2019 away.",
+"Headphones on, excuses off. Let\u2019s go."
+];
+var idx=Math.floor(Math.random()*QUOTES.length),timer=null;
+function show(i,animate){
+  var el=document.getElementById('heroQuoteI');
+  if(!el)return;
+  var apply=function(){el.textContent=QUOTES[i];};
+  if(animate&&window.gsap){gsap.to(el,{opacity:0,y:6,duration:.25,ease:'power2.in',onComplete:function(){apply();gsap.to(el,{opacity:1,y:0,duration:.4,ease:'power3.out'});}});}
+  else apply();
+}
+function next(){
+  var n;
+  do{n=Math.floor(Math.random()*QUOTES.length);}while(n===idx&&QUOTES.length>1);
+  idx=n;show(idx,true);
+}
+function arm(){
+  disarm();
+  timer=setInterval(function(){
+    if(document.body.getAttribute('data-level')==='intro'&&!document.hidden)next();
+  },7000);
+}
+function disarm(){if(timer){clearInterval(timer);timer=null;}}
+var _showView=window.showView;
+window.showView=function(name){
+  var r=_showView(name);
+  if(name==='intro'){next();arm();}else{disarm();}
+  return r;
+};
+arm();
 })();
 </script>
 
