@@ -536,6 +536,90 @@ body[data-theme="dark"] .home-card-intro:hover{box-shadow:0 12px 32px rgba(0,0,0
 }
 
 </style>
+<style>
+/* ===== MOBILE + NAV UPGRADE (appended) ===== */
+button,.audio-card-top,.unit-header,.vocab-card,.jumpchip,.reveal-btn,.play-btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+html,body{overflow-x:hidden}
+.unit{scroll-margin-top:128px}
+.audio-card{scroll-margin-top:160px}
+/* --- header compaction on small screens (both levels) --- */
+@media (max-width:640px){
+  .header{padding:0 10px 0 12px;gap:8px}
+  .logo-text{display:none}
+  .header-progress{gap:6px}
+  .header-progress-bar{width:52px}
+  .header-progress-count{font-size:11px;white-space:nowrap}
+  .header-center{display:none}
+  .theme-toggle,.backbtn{width:40px;height:40px}
+  .backbtn{font-size:16px}
+  .search-input{font-size:16px}
+  .audio-card-top{padding:12px 10px;gap:10px}
+  .play-btn{width:44px;height:44px;flex-shrink:0}
+  .audio-check{width:30px;height:30px}
+  .audio-title{font-size:13px}
+  .audio-time{font-size:10px;padding:3px 7px}
+  .transcript-line{font-size:13.5px}
+  .reveal-btn{padding:13px 24px;font-size:14px}
+  .vocab-card{padding:12px}
+  .unit-header{padding:14px 12px;gap:10px}
+  .unit-chevron{width:36px;height:36px}
+  .listen-panel{padding:24px 14px}
+}
+@media (max-width:380px){
+  .audio-card-top{gap:8px}
+  .audio-subtitle{font-size:11px}
+  .header-progress-bar{display:none}
+}
+/* --- unit jump bar --- */
+.jumpbar{position:sticky;z-index:60;display:flex;gap:6px;overflow-x:auto;align-items:center;
+  padding:10px 4px;margin:0 0 12px;scrollbar-width:none;
+  background:var(--bg);border-bottom:1px solid var(--border)}
+.jumpbar::-webkit-scrollbar{display:none}
+body[data-level="intro"] .jumpbar{top:60px}
+body[data-level="medium"] .jumpbar{top:56px}
+.jumplabel{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:800;letter-spacing:.14em;
+  color:var(--text-muted);flex-shrink:0;padding:0 4px}
+.jumpchip{flex-shrink:0;min-width:38px;height:34px;padding:0 11px;border-radius:99px;
+  border:1px solid var(--border);background:var(--surface);color:var(--text-sec);
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;cursor:pointer}
+.jumpchip:active{transform:scale(.93)}
+body[data-level="medium"] .jumpbar{background:#050508;border-bottom-color:#1E1E32}
+body[data-level="medium"] .jumpchip{background:#15151F;border-color:#2A2A44;color:#8A8AA8}
+body[data-level="medium"] .jumpchip:active{border-color:#00FF88;color:#00FF88}
+/* --- bottom mini-player --- */
+#np{position:fixed;left:0;right:0;bottom:0;z-index:200;display:flex;align-items:center;gap:10px;
+  padding:8px 12px calc(8px + env(safe-area-inset-bottom));
+  background:rgba(12,12,20,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  transform:translateY(110%);transition:transform .35s cubic-bezier(.22,1,.36,1)}
+#np.on{transform:none}
+body[data-level="intro"] #np{border-top:2px solid #5B5BF6}
+body[data-level="medium"] #np{border-top:2px solid #00FF88}
+.np-main{flex:1;min-width:0}
+.np-kicker{font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:800;letter-spacing:.14em;color:#8A8AA8}
+.np-title{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np-time{font-family:'JetBrains Mono',monospace;font-size:10px;color:#8A8AA8;font-variant-numeric:tabular-nums}
+.np-progress{height:5px;background:#23233A;border-radius:99px;margin-top:5px;cursor:pointer}
+.np-fill{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#5B5BF6,#00E5FF)}
+.np-btn{width:42px;height:42px;flex-shrink:0;border-radius:50%;border:1px solid #2A2D4A;
+  background:#15151F;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.np-btn:active{transform:scale(.92)}
+.np-btn.play{background:#fff;color:#000;border:none;font-size:16px;width:46px;height:46px}
+#npClose{background:transparent;border:none;color:#5A5A78;font-size:20px;width:32px;height:32px}
+body.np-on{padding-bottom:78px}
+body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
+/* --- back to top --- */
+#toTop{position:fixed;right:14px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:190;
+  width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface);
+  color:var(--text);font-size:18px;font-weight:800;cursor:pointer;opacity:0;pointer-events:none;
+  transform:translateY(8px);transition:opacity .25s,transform .25s;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+#toTop.show{opacity:1;pointer-events:auto;transform:none}
+@media(min-width:900px){
+  #np{left:50%;right:auto;width:min(860px,100%);transform:translate(-50%,110%);border-left:1px solid #23233A;border-right:1px solid #23233A}
+  #np.on{transform:translate(-50%,0)}
+}
+
+</style>
 </head>
 <body data-level="home">
 <section id="viewHome" class="level-view">
@@ -2379,6 +2463,7 @@ async function togglePlayI(card){
   }
 
   currentAudioI={el:card,audioEl};
+  window.__npBind('intro',card,audioEl);
   const playBtn=card.querySelector('.play-btn');
   const progressFill=card.querySelector('.audio-progress-fill');
   const timeEl=card.querySelector('.audio-time');
@@ -2822,6 +2907,7 @@ async function togglePlayM(card){
     const timeEl=card.querySelector('.audio-time');timeEl.textContent='NO SIGNAL';timeEl.style.color='#FF2B2B';return;
   }
   currentAudioM={el:card,audioEl};
+  window.__npBind('medium',card,audioEl);
   const playBtn=card.querySelector('.play-btn');
   const progressFill=card.querySelector('.audio-progress-fill');
   const timeEl=card.querySelector('.audio-time');
@@ -3019,8 +3105,8 @@ function initAnimationsM(){
     if(cur==='medium') pauseLevel('medium');
     Object.keys(views).forEach(function(k){views[k].hidden=(k!==name);});
     document.body.setAttribute('data-level',name);
-    if(name==='intro'&&!built.intro){built.intro=true;try{buildI();}catch(e){console.error(e);}}
-    if(name==='medium'&&!built.medium){built.medium=true;try{buildM();}catch(e){console.error(e);}}
+    if(name==='intro'&&!built.intro){built.intro=true;try{buildI();npBuildJump('viewIntro','appI');}catch(e){console.error(e);}}
+    if(name==='medium'&&!built.medium){built.medium=true;try{buildM();npBuildJump('viewMedium','appM');}catch(e){console.error(e);}}
     if(name==='home') updateHome();
     window.scrollTo(0,0);
   };
@@ -3033,5 +3119,135 @@ function initAnimationsM(){
 })();
 
 </script>
+
+<div id="np" hidden>
+  <button class="np-btn play" id="npToggle" aria-label="Play or pause">▶</button>
+  <div class="np-main">
+    <div class="np-kicker" id="npLevel">—</div>
+    <div class="np-title" id="npTitle">—</div>
+    <div class="np-progress" id="npProgress"><div class="np-fill" id="npFill"></div></div>
+  </div>
+  <span class="np-time" id="npTime">0:00</span>
+  <button class="np-btn" id="npPrev" aria-label="Previous audio">⏮</button>
+  <button class="np-btn" id="npNext" aria-label="Next audio">⏭</button>
+  <button id="npClose" aria-label="Close player">×</button>
+</div>
+<button id="toTop" aria-label="Back to top">↑</button>
+
+<script>
+/* ================= NAV BRIDGE: mini-player + jumpbar + prev/next + to-top ================= */
+(function(){
+var NP={level:null,card:null,audio:null,_t:null,_e:null,_p:null,_pa:null};
+var PLAY_SVG='<svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>';
+var PAUSE_SVG='<svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+function fmt(s){if(!s||!isFinite(s))return'0:00';var m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+(sec<10?'0':'')+sec;}
+function npEl(id){return document.getElementById(id);}
+function npShow(){npEl('np').hidden=false;requestAnimationFrame(function(){npEl('np').classList.add('on');});document.body.classList.add('np-on');}
+function npHide(){npEl('np').classList.remove('on');document.body.classList.remove('np-on');setTimeout(function(){if(!npEl('np').classList.contains('on'))npEl('np').hidden=true;},380);}
+function npSyncCardBtn(playing){
+  if(!NP.card)return;
+  var b=NP.card.querySelector('.play-btn');if(!b)return;
+  b.classList.toggle('playing',playing);
+  b.innerHTML=playing?PAUSE_SVG:PLAY_SVG;
+}
+function npTick(){
+  var a=NP.audio;if(!a)return;
+  var d=a.duration;
+  if(d&&isFinite(d)){npEl('npFill').style.width=(a.currentTime/d*100)+'%';npEl('npTime').textContent=fmt(a.currentTime)+' / '+fmt(d);}
+}
+function npSync(playing){
+  npEl('npToggle').textContent=playing?String.fromCharCode(10074,10074):'▶';
+  npSyncCardBtn(playing);
+}
+function npUnbind(){
+  if(NP.audio){
+    NP.audio.removeEventListener('timeupdate',NP._t);
+    NP.audio.removeEventListener('ended',NP._e);
+    NP.audio.removeEventListener('play',NP._p);
+    NP.audio.removeEventListener('pause',NP._pa);
+  }
+  NP.audio=null;NP._t=NP._e=NP._p=NP._pa=null;
+}
+window.__npBind=function(level,card,audioEl){
+  npUnbind();
+  NP.level=level;NP.card=card;NP.audio=audioEl;
+  var t=(card.querySelector('.audio-title')?card.querySelector('.audio-title').innerText:'').trim().replace(/\s+/g,' ');
+  npEl('npTitle').textContent=t||card.dataset.audioId;
+  npEl('npLevel').textContent=level==='intro'?'LEVEL I':'MEDIUM';
+  npEl('npTime').textContent='0:00';
+  npEl('npFill').style.width='0%';
+  NP._t=function(){npTick();};
+  NP._e=function(){npHide();var l=NP.level;npUnbind();NP.card=card;NP.level=l;};
+  NP._p=function(){npSync(true);};
+  NP._pa=function(){npSync(false);};
+  audioEl.addEventListener('timeupdate',NP._t);
+  audioEl.addEventListener('ended',NP._e);
+  audioEl.addEventListener('play',NP._p);
+  audioEl.addEventListener('pause',NP._pa);
+  npShow();npTick();npSync(!audioEl.paused);
+};
+npEl('npToggle').addEventListener('click',function(){
+  npShow();
+  if(NP.audio){if(NP.audio.paused){NP.audio.play().catch(function(){});}else{NP.audio.pause();}}
+  else if(NP.card){var b=NP.card.querySelector('.play-btn');if(b)b.click();}
+});
+npEl('npProgress').addEventListener('click',function(e){
+  if(!NP.audio||!NP.audio.duration)return;
+  var r=this.getBoundingClientRect();
+  NP.audio.currentTime=((e.clientX-r.left)/r.width)*NP.audio.duration;
+});
+npEl('npClose').addEventListener('click',function(){
+  if(NP.audio)NP.audio.pause();
+  npHide();
+});
+function npStep(dir){
+  var card=NP.card;if(!card)return;
+  var list=Array.prototype.slice.call(card.parentElement.querySelectorAll('.audio-card'));
+  var nxt=list[list.indexOf(card)+dir];
+  if(!nxt)return;
+  var fn=NP.level==='intro'?toggleExpandI:toggleExpandM;
+  var unit=nxt.closest('.unit');
+  if(unit&&!unit.classList.contains('open'))unit.querySelector('.unit-header').click();
+  setTimeout(function(){
+    if(nxt.classList.contains('expanded'))return;
+    fn(nxt);
+    nxt.scrollIntoView({behavior:'smooth',block:'center'});
+    NP.card=nxt;
+    var t=(nxt.querySelector('.audio-title')?nxt.querySelector('.audio-title').innerText:'').trim().replace(/\s+/g,' ');
+    npEl('npTitle').textContent=t||nxt.dataset.audioId;
+  },unit&&!unit.classList.contains('open')?150:380);
+}
+npEl('npPrev').addEventListener('click',function(){npStep(-1);});
+npEl('npNext').addEventListener('click',function(){npStep(1);});
+window.npBuildJump=function(viewId,appId){
+  var view=document.getElementById(viewId);
+  if(!view||view.querySelector('.jumpbar'))return;
+  var app=document.getElementById(appId);
+  if(!app)return;
+  var bar=document.createElement('div');
+  bar.className='jumpbar';
+  var label=document.createElement('span');
+  label.className='jumplabel';label.textContent='JUMP';
+  bar.appendChild(label);
+  view.querySelectorAll('.unit').forEach(function(u){
+    var num=u.dataset.unitNum||'?';
+    var b=document.createElement('button');
+    b.className='jumpchip';b.type='button';b.textContent=num;
+    var nm=u.querySelector('.unit-name');
+    if(nm)b.title=nm.textContent.trim();
+    b.addEventListener('click',function(){
+      if(!u.classList.contains('open'))u.querySelector('.unit-header').click();
+      setTimeout(function(){u.scrollIntoView({behavior:'smooth',block:'start'});},150);
+    });
+    bar.appendChild(b);
+  });
+  app.parentElement.insertBefore(bar,app);
+};
+var toTop=npEl('toTop');
+window.addEventListener('scroll',function(){toTop.classList.toggle('show',window.scrollY>600);},{passive:true});
+toTop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+})();
+</script>
+
 </body>
 </html>
