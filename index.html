@@ -3204,17 +3204,21 @@ function npStep(dir){
   var list=Array.prototype.slice.call(card.parentElement.querySelectorAll('.audio-card'));
   var nxt=list[list.indexOf(card)+dir];
   if(!nxt)return;
-  var fn=NP.level==='intro'?toggleExpandI:toggleExpandM;
+  var tk=(NP._step=(NP._step||0)+1);
   var unit=nxt.closest('.unit');
   if(unit&&!unit.classList.contains('open'))unit.querySelector('.unit-header').click();
   setTimeout(function(){
-    if(nxt.classList.contains('expanded'))return;
-    fn(nxt);
-    nxt.scrollIntoView({behavior:'smooth',block:'center'});
+    if(tk!==NP._step)return;
     NP.card=nxt;
     var t=(nxt.querySelector('.audio-title')?nxt.querySelector('.audio-title').innerText:'').trim().replace(/\s+/g,' ');
     npEl('npTitle').textContent=t||nxt.dataset.audioId;
-  },unit&&!unit.classList.contains('open')?150:380);
+    if(!nxt.classList.contains('expanded')){
+      (NP.level==='intro'?toggleExpandI:toggleExpandM)(nxt);
+    }
+    nxt.scrollIntoView({behavior:'smooth',block:'center'});
+    var b=nxt.querySelector('.play-btn');
+    if(b)b.click();
+  },380);
 }
 npEl('npPrev').addEventListener('click',function(){npStep(-1);});
 npEl('npNext').addEventListener('click',function(){npStep(1);});
@@ -3249,7 +3253,7 @@ toTop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smoot
 </script>
 
 <script>
-/* ============ HERO QUOTES: rotating motivation one-liners ============ */
+/* ============ HERO QUOTES: one random line per page load ============ */
 (function(){
 var QUOTES=[
 "Your ears are lazy. Train them \u2014 press play, no peeking at the transcript.",
@@ -3261,33 +3265,8 @@ var QUOTES=[
 "One audio a day keeps the \u2018sorry, what?\u2019 away.",
 "Headphones on, excuses off. Let\u2019s go."
 ];
-var idx=Math.floor(Math.random()*QUOTES.length),timer=null;
-function show(i,animate){
-  var el=document.getElementById('heroQuoteI');
-  if(!el)return;
-  var apply=function(){el.textContent=QUOTES[i];};
-  if(animate&&window.gsap){gsap.to(el,{opacity:0,y:6,duration:.25,ease:'power2.in',onComplete:function(){apply();gsap.to(el,{opacity:1,y:0,duration:.4,ease:'power3.out'});}});}
-  else apply();
-}
-function next(){
-  var n;
-  do{n=Math.floor(Math.random()*QUOTES.length);}while(n===idx&&QUOTES.length>1);
-  idx=n;show(idx,true);
-}
-function arm(){
-  disarm();
-  timer=setInterval(function(){
-    if(document.body.getAttribute('data-level')==='intro'&&!document.hidden)next();
-  },7000);
-}
-function disarm(){if(timer){clearInterval(timer);timer=null;}}
-var _showView=window.showView;
-window.showView=function(name){
-  var r=_showView(name);
-  if(name==='intro'){next();arm();}else{disarm();}
-  return r;
-};
-arm();
+var el=document.getElementById('heroQuoteI');
+if(el)el.textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
 })();
 </script>
 
