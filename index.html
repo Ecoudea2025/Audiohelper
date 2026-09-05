@@ -622,6 +622,10 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
 </head>
 <body data-level="home">
 <section id="viewHome" class="level-view">
+<header class="home-topbar">
+  <div class="home-brand"><span class="home-logo">◐</span><span class="home-brand-name">CD Market</span></div>
+  <button class="theme-toggle" id="themeToggleHome" aria-label="Toggle dark mode">🌙</button>
+</header>
   <div class="home-wrap">
     <div class="home-eyebrow">CD Market · Listening Course</div>
     <h1 class="home-title">Choose your <span>protocol</span></h1>
@@ -705,15 +709,16 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
     <span class="hud-label">MODE</span><span class="hud-value">MEDIUM</span>
   </div>
   <div class="header-right">
-    <button class="back-link" data-home-link>← BASE</button>
+    <button class="backbtn" data-home-link title="Back to level select">←</button>
     <div class="header-bar"><div class="header-bar-fill" id="globalProgressM"></div></div>
     <span class="header-count"><span id="completedCountM">0</span>/<span id="totalCountM">0</span></span>
+    <button class="theme-toggle" id="themeToggleM" aria-label="Toggle dark mode">🌙</button>
   </div>
 </header>
 <main>
   <section class="hero">
     <div class="hero-glitch"><span class="a">SURVIVE<br>THE CALL</span><span class="b" aria-hidden="true">SURVIVE<br>THE CALL</span></div>
-    <p>Bienvenido al <strong>nivel MEDIUM</strong>. Aquí no hay introducciones amables — hay <strong>negociaciones hostiles, crisis y presión real</strong>. Si el nivel I era tutorial, esto es el juego. Escucha bajo presión. Sin transcript. Sin ayuda. Luego desencripta.</p>
+    <p id="heroQuoteM">No subtitles. No mercy. Just you and the audio.</p>
     <div class="hero-stats">
       <div class="stat"><div class="stat-num">12</div><div class="stat-label">SECTORS // 1-12</div></div>
       <div class="stat"><div class="stat-num" id="heroTotalM">71</div><div class="stat-label">ENCOUNTERS // MP3</div></div>
@@ -2187,17 +2192,18 @@ const MEDIUM_DATA=[
 ];
 const viewIntro=document.getElementById('viewIntro');
 
-/* THEME */
-const themeToggleI=document.getElementById('themeToggleI');
+/* THEME (global: one state for home + intro; medium stays dark by design) */
+function setTheme(mode){
+  document.body.setAttribute('data-theme',mode);
+  try{localStorage.setItem('cdm_theme',mode);}catch(e){}
+  document.querySelectorAll('.theme-toggle').forEach(function(b){b.textContent=mode==='dark'?'☀️':'🌙';});
+}
 const savedThemeI=localStorage.getItem('cdm_theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
-document.body.setAttribute('data-theme',savedThemeI);
-themeToggleI.textContent=savedThemeI==='dark'?'☀️':'🌙';
-themeToggleI.addEventListener('click',()=>{
-  const curI=document.body.getAttribute('data-theme');
-  const nxtI=curI==='dark'?'light':'dark';
-  document.body.setAttribute('data-theme',nxtI);
-  localStorage.setItem('cdm_theme',nxtI);
-  themeToggleI.textContent=nxtI==='dark'?'☀️':'🌙';
+setTheme(savedThemeI);
+document.querySelectorAll('.theme-toggle').forEach(function(b){
+  b.addEventListener('click',function(){
+    setTheme(document.body.getAttribute('data-theme')==='dark'?'light':'dark');
+  });
 });
 
 /* COURSE DATA */
@@ -3313,8 +3319,35 @@ var QUOTES=[
 ];
 var el=document.getElementById('heroQuoteI');
 if(el)el.textContent=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+var QUOTES_M=[
+"No subtitles. No mercy. Just you and the audio.",
+"The transcript is classified. Earn the decryption.",
+"71 encounters. Zero safe zones. Good luck.",
+"In business, nobody repeats themselves twice. Listen like it.",
+"Comfort zone ends here. Press play if you dare.",
+"Misunderstand one clause and it costs millions. Practice now.",
+"The meeting will not slow down for you. Neither will this audio.",
+"Decrypt first. Negotiate later."
+];
+var elm=document.getElementById('heroQuoteM');
+if(elm)elm.textContent=QUOTES_M[Math.floor(Math.random()*QUOTES_M.length)];
 })();
 </script>
+
+<style>
+/* ===== global theme toggle + home topbar + unified nav (appended) ===== */
+.theme-toggle{width:38px;height:38px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text-sec);cursor:pointer;font-size:16px;font-family:inherit;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.theme-toggle:hover{border-color:var(--accent);color:var(--accent);transform:rotate(15deg)}
+.home-topbar{display:flex;align-items:center;justify-content:space-between;max-width:760px;margin:0 auto;padding:14px 24px 0;position:relative;z-index:1}
+.home-brand{display:flex;align-items:center;gap:10px}
+.home-logo{width:32px;height:32px;border-radius:9px;background:var(--accent-grad);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;flex-shrink:0}
+.home-brand-name{font-weight:800;font-size:14px;letter-spacing:-.3px}
+body[data-level="medium"] .theme-toggle{background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.25);color:#00FF88}
+body[data-level="medium"] .theme-toggle:hover{border-color:#00FF88;color:#00FF88;box-shadow:0 0 12px rgba(0,255,136,.25)}
+@media (max-width:640px){
+  .home-topbar{padding:12px 16px 0}
+}
+</style>
 
 </body>
 </html>
