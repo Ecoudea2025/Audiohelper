@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%235B5BF6'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='white'%3E%E2%97%90%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="logo-home.png">
 <title>CD Market — Listening Course</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -623,16 +623,17 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
 <body data-level="home">
 <section id="viewHome" class="level-view">
 <header class="home-topbar">
-  <div class="home-brand"><span class="home-logo">◐</span><span class="home-brand-name">CD Market</span></div>
+  <div class="home-brand"><span class="home-logo"><img src="logo-home.png" alt="CD Market home logo"></span><span class="home-brand-name">CD Market</span></div>
   <button class="theme-toggle" id="themeToggleHome" aria-label="Toggle dark mode">🌙</button>
 </header>
   <div class="home-wrap">
+    <img class="home-hero-logo" src="logo-home.png" alt="CD Market logo">
     <div class="home-eyebrow">CD Market · Listening Course</div>
     <h1 class="home-title">Choose your <span>protocol</span></h1>
     <p class="home-sub">Two levels, one goal: train your ear. Start with Level I, then try to survive Medium.</p>
     <div class="home-cards">
       <article class="home-card home-card-intro">
-        <div class="home-card-top"><span class="home-card-icon">🎧</span><span class="home-card-tag">LEVEL I · TUTORIAL</span></div>
+        <div class="home-card-top"><span class="home-card-icon"><img src="logo-intro.png" alt="Listening Lab logo"></span><span class="home-card-tag">LEVEL I · TUTORIAL</span></div>
         <h2>Listening Lab</h2>
         <p>Introductions → Jobs. Listen first, then reveal the transcript and vocabulary. Calm light/dark design.</p>
         <div class="home-card-meta"><span><b id="homeIntroTotal">–</b> audios</span><span><b id="homeIntroDone">0</b> completed</span></div>
@@ -640,7 +641,7 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
         <button class="home-enter home-enter-intro" data-level-link="intro">ENTER LEVEL I →</button>
       </article>
       <article class="home-card home-card-medium">
-        <div class="home-card-top"><span class="home-card-icon">⚠</span><span class="home-card-tag">MEDIUM · HOSTILE</span></div>
+        <div class="home-card-top"><span class="home-card-icon"><img src="logo-medium.png" alt="Hostile Protocol logo"></span><span class="home-card-tag">MEDIUM · HOSTILE</span></div>
         <h2>Hostile Protocol</h2>
         <p>Careers → Products. No friendly intros here — hostile negotiations, crisis and real pressure. Neon dark ops.</p>
         <div class="home-card-meta"><span><b id="homeMedTotal">–</b> encounters</span><span><b id="homeMedDone">0</b> completed</span></div>
@@ -655,7 +656,7 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
 <section id="viewIntro" class="level-view" hidden>
 <header class="header" id="headerI">
   <div class="header-left">
-    <div class="logo">◐</div>
+    <div class="logo logo-img"><img src="logo-intro.png" alt="Listening Lab logo"></div>
     <div class="logo-text">
       <div class="logo-title">Listening Lab</div>
       <div class="logo-sub">CD Market · 12 Units</div>
@@ -674,6 +675,7 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
 <main>
   <section class="hero">
     <div class="hero-inner">
+      <img class="hero-logo hero-logo-intro" src="logo-intro.png" alt="Listening Lab logo">
       <div class="hero-eyebrow"><span class="dot"></span> Cozy Quest · Level I</div>
       <h1>Listen first,<br><em>understand later.</em></h1>
       <p id="heroQuoteI">Your ears are lazy. Train them — press play, no peeking at the transcript.</p>
@@ -698,7 +700,7 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
 <section id="viewMedium" class="level-view" hidden>
 <header class="header" id="headerM">
   <div class="header-left">
-    <div class="logo">◈</div>
+    <div class="logo logo-img"><img src="logo-medium.png" alt="Medium protocol logo"></div>
     <div class="logo-text">
       <div class="logo-title">Market // Medium</div>
       <div class="logo-sub">Protocol: Hostile</div>
@@ -717,6 +719,7 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
 </header>
 <main>
   <section class="hero">
+    <img class="hero-logo hero-logo-medium" src="logo-medium.png" alt="Medium protocol logo">
     <div class="hero-glitch"><span class="a">SURVIVE<br>THE CALL</span><span class="b" aria-hidden="true">SURVIVE<br>THE CALL</span></div>
     <p id="heroQuoteM">No subtitles. No mercy. Just you and the audio.</p>
     <div class="hero-stats">
@@ -3377,6 +3380,34 @@ body[data-level="intro"] .jumpchip{border-radius:99px;border-width:2px;font-weig
 body[data-level="intro"] .unit-chevron{border-radius:10px;border-width:2px}
 body[data-level="intro"] .play-btn{box-shadow:0 4px 14px var(--accent-glow)}
 </style>
+<style>
+/* ===== Level I home card: fixed cozy-cartridge identity (both themes) ===== */
+.home-card-intro{background:linear-gradient(160deg,#FDFAFF 0%,#F0E9FF 100%);border:2px solid #CFC0F2;border-radius:20px;box-shadow:0 5px 0 #D9CFF5,0 16px 32px rgba(124,92,252,.16);overflow:hidden;position:relative}
+.home-card-intro::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(124,92,252,.13) 1.5px,transparent 1.7px);background-size:22px 22px}
+.home-card-intro>*{position:relative}
+.home-card-intro:hover{box-shadow:0 8px 0 #D9CFF5,0 20px 40px rgba(124,92,252,.22)}
+.home-card-intro h2{color:#251F3A}
+.home-card-intro p{color:#5D5478}
+.home-card-intro .home-card-tag{background:#FFF3D6;color:#8A5A00;border:1px solid #FFB020}
+.home-card-intro .home-card-meta{color:#8A83A8}
+.home-card-intro .home-card-meta b{color:#6D3FD4}
+.home-card-intro .home-card-bar{background:#E2D9F8}
+body[data-theme="dark"] .home-card-intro{box-shadow:0 5px 0 #D9CFF5,0 16px 36px rgba(0,0,0,.5)}
+body[data-theme="dark"] .home-card-intro:hover{box-shadow:0 8px 0 #D9CFF5,0 22px 44px rgba(0,0,0,.55)}
+/* ===== Logos reales (home=morado, intro=rosa, medium=verde) + acabado cozy ===== */
+.home-logo{padding:0;overflow:hidden;background:#fff}
+.home-logo img,.logo.logo-img img,.home-card-icon img,.hero-logo,.home-hero-logo{display:block;width:100%;height:100%;object-fit:cover}
+.home-logo img{border-radius:9px}
+.logo.logo-img{padding:0;overflow:hidden;background:#fff}
+body[data-level="intro"] .logo.logo-img,body[data-level="medium"] .logo.logo-img{width:40px;height:40px;border-radius:11px;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+body[data-level="medium"] .logo.logo-img{box-shadow:0 0 14px rgba(0,255,136,.35)}
+.home-card-icon{width:44px;height:44px;border-radius:12px;overflow:hidden;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.home-card-icon img{border-radius:12px}
+.home-card-medium .home-card-icon{box-shadow:0 0 12px rgba(0,255,136,.35)}
+.home-hero-logo{width:84px;height:84px;border-radius:22px;object-fit:cover;box-shadow:0 12px 32px rgba(91,91,246,.25);margin-bottom:14px;border:2px solid rgba(255,255,255,.7)}
+.hero-logo{width:72px;height:72px;border-radius:18px;object-fit:cover;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);border:2px solid rgba(255,255,255,.65)}
+.hero-logo-medium{box-shadow:0 0 20px rgba(0,255,136,.35);border-color:rgba(0,255,136,.4)}
+@media(max-width:640px){.home-hero-logo{width:64px;height:64px;border-radius:17px}.hero-logo{width:56px;height:56px;border-radius:14px}}</style>
 <script>
 /* ============ HERO QUOTES: one random line per page load ============ */
 (function(){
