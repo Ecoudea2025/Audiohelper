@@ -627,7 +627,6 @@ body.np-on #toTop{bottom:calc(88px + env(safe-area-inset-bottom))}
   <button class="theme-toggle" id="themeToggleHome" aria-label="Toggle dark mode">🌙</button>
 </header>
   <div class="home-wrap">
-    <img class="home-hero-logo" src="logo-home.png" alt="CD Market logo">
     <div class="home-eyebrow">CD Market · Listening Course</div>
     <h1 class="home-title">Choose your <span>protocol</span></h1>
     <p class="home-sub">Two levels, one goal: train your ear. Start with Level I, then try to survive Medium.</p>
@@ -3392,22 +3391,28 @@ body[data-level="intro"] .play-btn{box-shadow:0 4px 14px var(--accent-glow)}
 .home-card-intro .home-card-meta{color:#8A83A8}
 .home-card-intro .home-card-meta b{color:#6D3FD4}
 .home-card-intro .home-card-bar{background:#E2D9F8}
-body[data-theme="dark"] .home-card-intro{box-shadow:0 5px 0 #D9CFF5,0 16px 36px rgba(0,0,0,.5)}
-body[data-theme="dark"] .home-card-intro:hover{box-shadow:0 8px 0 #D9CFF5,0 22px 44px rgba(0,0,0,.55)}
+body[data-theme="dark"] .home-card-intro{background:linear-gradient(160deg,#241D4D 0%,#2E2660 100%);border-color:#4E4484;box-shadow:0 5px 0 #171232,0 16px 36px rgba(0,0,0,.5)}
+body[data-theme="dark"] .home-card-intro::before{background-image:radial-gradient(rgba(167,139,250,.20) 1.5px,transparent 1.7px)}
+body[data-theme="dark"] .home-card-intro:hover{box-shadow:0 8px 0 #171232,0 22px 44px rgba(0,0,0,.55)}
+body[data-theme="dark"] .home-card-intro h2{color:#F4F0FF}
+body[data-theme="dark"] .home-card-intro p{color:#BDB3E0}
+body[data-theme="dark"] .home-card-intro .home-card-tag{background:#3A2E12;color:#FFD166;border-color:#FFB020}
+body[data-theme="dark"] .home-card-intro .home-card-meta{color:#877DAE}
+body[data-theme="dark"] .home-card-intro .home-card-meta b{color:#C4B5FD}
+body[data-theme="dark"] .home-card-intro .home-card-bar{background:#38305E}
 /* ===== Logos reales (home=morado, intro=rosa, medium=verde) + acabado cozy ===== */
 .home-logo{padding:0;overflow:hidden;background:#fff}
-.home-logo img,.logo.logo-img img,.home-card-icon img,.hero-logo,.home-hero-logo{display:block;width:100%;height:100%;object-fit:cover}
-.home-logo img{border-radius:9px}
+.home-logo img,.logo.logo-img img,.home-card-icon img,.hero-logo{display:block;width:100%;height:100%;object-fit:cover}
+.home-logo img{border-radius:14px}
 .logo.logo-img{padding:0;overflow:hidden;background:#fff}
 body[data-level="intro"] .logo.logo-img,body[data-level="medium"] .logo.logo-img{width:40px;height:40px;border-radius:11px;box-shadow:0 2px 10px rgba(0,0,0,.18)}
 body[data-level="medium"] .logo.logo-img{box-shadow:0 0 14px rgba(0,255,136,.35)}
 .home-card-icon{width:44px;height:44px;border-radius:12px;overflow:hidden;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.12)}
 .home-card-icon img{border-radius:12px}
 .home-card-medium .home-card-icon{box-shadow:0 0 12px rgba(0,255,136,.35)}
-.home-hero-logo{width:84px;height:84px;border-radius:22px;object-fit:cover;box-shadow:0 12px 32px rgba(91,91,246,.25);margin-bottom:14px;border:2px solid rgba(255,255,255,.7)}
 .hero-logo{width:72px;height:72px;border-radius:18px;object-fit:cover;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);border:2px solid rgba(255,255,255,.65)}
 .hero-logo-medium{box-shadow:0 0 20px rgba(0,255,136,.35);border-color:rgba(0,255,136,.4)}
-@media(max-width:640px){.home-hero-logo{width:64px;height:64px;border-radius:17px}.hero-logo{width:56px;height:56px;border-radius:14px}}</style>
+@media(max-width:640px){.hero-logo{width:56px;height:56px;border-radius:14px}}</style>
 <script>
 /* ============ HERO QUOTES: one random line per page load ============ */
 (function(){
@@ -3444,8 +3449,11 @@ if(elm)elm.textContent=QUOTES_M[Math.floor(Math.random()*QUOTES_M.length)];
 .theme-toggle:hover{border-color:var(--accent);color:var(--accent);transform:rotate(15deg)}
 .home-topbar{display:flex;align-items:center;justify-content:space-between;max-width:760px;margin:0 auto;padding:14px 24px 0;position:relative;z-index:1}
 .home-brand{display:flex;align-items:center;gap:10px}
-.home-logo{width:32px;height:32px;border-radius:9px;background:var(--accent-grad);display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;flex-shrink:0}
-.home-brand-name{font-weight:800;font-size:14px;letter-spacing:-.3px}
+.home-logo{width:48px;height:48px;border-radius:15px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;padding:0;border:2px solid rgba(255,255,255,.85);box-shadow:0 6px 20px rgba(91,91,246,.35);animation:home-logo-float 3.5s ease-in-out infinite}
+.home-logo:hover{animation:home-logo-wiggle .5s ease;transform:scale(1.07)}
+@keyframes home-logo-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes home-logo-wiggle{0%,100%{transform:rotate(0) scale(1.07)}25%{transform:rotate(-8deg) scale(1.11)}75%{transform:rotate(8deg) scale(1.11)}}
+.home-brand-name{font-weight:800;font-size:15px;letter-spacing:-.3px}
 body[data-level="medium"] .theme-toggle{background:rgba(0,255,136,.08);border-color:rgba(0,255,136,.25);color:#00FF88}
 body[data-level="medium"] .theme-toggle:hover{border-color:#00FF88;color:#00FF88;box-shadow:0 0 12px rgba(0,255,136,.25)}
 @media (max-width:640px){
