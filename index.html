@@ -2541,11 +2541,11 @@ async function togglePlayI(card){
     const audioId=card.dataset.audioId;
     if(!completedSetI.has(audioId)){
       completedSetI.add(audioId);
-      saveProgressI();
-      updateUnitProgressI(card);
       const check=card.querySelector('.audio-check');
       check.classList.add('done');
       check.innerHTML='<svg viewBox="0 0 24 24"><polyline points="4 12 9 17 20 6"/></svg>';
+      saveProgressI();
+      updateUnitProgressI(card);
       gsap.fromTo(check,{scale:0,rotation:-20},{scale:1,rotation:0,duration:.45,ease:'back.out(2.2)'});
     }
     currentAudioI=null;
@@ -2974,9 +2974,10 @@ async function togglePlayM(card){
     progressFill.style.width='0%';
     const audioId=card.dataset.audioId;
     if(!completedSetM.has(audioId)){
-      completedSetM.add(audioId);saveProgressM();updateUnitProgressM(card);
+      completedSetM.add(audioId);
       const check=card.querySelector('.audio-check');
       check.classList.add('done');check.innerHTML='<svg viewBox="0 0 24 24"><polyline points="4 12 9 17 20 6"/></svg>';
+      saveProgressM();updateUnitProgressM(card);
       gsap.fromTo(check,{scale:0,rotation:-24},{scale:1.08,rotation:0,duration:.42,ease:'back.out(2.4)'});
       gsap.to(check,{scale:1,duration:.22,ease:'power3.out',delay:.42});
       if(typeof anime!=='undefined'){
