@@ -2297,7 +2297,30 @@ function buildI(){
   totalElI.textContent=totalAudiosI;
   heroTotalI.textContent=totalAudiosI;
 
-  INTRO_DATA.forEach((unit,ui)=>{
+  // Hero entrance runs immediately on enter (as before); heavy units stream below.
+  initHeroI();
+
+  // First-enter build is chunked (1 unit/frame) to avoid long tasks on mobile.
+  // Interactions, animations and jumpbar init run on completion (see driver below).
+  _buildChunkedI(0);
+}
+
+function _buildChunkedI(start){
+  const end=Math.min(start+1,INTRO_DATA.length);
+  for(let ui=start;ui<end;ui++) buildUnitI(INTRO_DATA[ui],ui);
+  if(end<INTRO_DATA.length){
+    // Double-rAF: let the browser paint streamed units + run hero tween before next chunk.
+    if(window.requestAnimationFrame){ requestAnimationFrame(function(){requestAnimationFrame(function(){_buildChunkedI(end);});}); }
+    else{ setTimeout(function(){_buildChunkedI(end);},16); }
+    return;
+  }
+  saveProgressI();
+  initInteractionsI();
+  initAnimationsI();
+  try{npBuildJump('viewIntro','appI');}catch(e){console.error(e);}
+}
+
+function buildUnitI(unit,ui){
     const done=unit.audios.filter(a=>completedSetI.has(a.id)).length;
     const pct=unit.audios.length?(done/unit.audios.length*100):0;
     const unitEl=document.createElement('div');
@@ -2375,10 +2398,6 @@ function buildI(){
         <div class="hide-wrap" style="display:none;padding:0 14px 14px;text-align:center"><button class="hide-btn">🙈 Hide the story</button></div>`;
       body.appendChild(card);
     });
-  });
-  saveProgressI();
-  initInteractionsI();
-  initAnimationsI();
 }
 
 /* INTERACTIONS */
@@ -2772,13 +2791,18 @@ function toggleVocabI(card,vocabCard){
 }
 
 function initAnimationsI(){
-  // Lenis smooth scroll — single driver (gsap ticker) to avoid double-raf
+  // Lenis smooth scroll — single driver (gsap ticker) to avoid double-raf.
+  // Skipped on touch devices: native momentum scroll is smoother and cheaper there.
+  if(!window.matchMedia||!matchMedia('(pointer:coarse)').matches){
   try{
     const lenis=new Lenis({duration:1.05, easing:t=>Math.min(1,1.001-Math.pow(2,-10*t))});
     gsap.ticker.add(t=>lenis.raf(t*1000));
     gsap.ticker.lagSmoothing(0);
   }catch(e){}
+  }
+}
 
+function initHeroI(){
   window.addEventListener('scroll',()=>headerElI.classList.toggle('scrolled',scrollY>18),{passive:true});
   gsap.fromTo('#viewIntro .hero',{opacity:0,y:18},{opacity:1,y:0,duration:.7,ease:'power3.out',delay:.08});
   gsap.fromTo('#viewIntro .hero p',{opacity:0,y:12},{opacity:1,y:0,duration:.6,ease:'power3.out',delay:.2});
@@ -2811,7 +2835,26 @@ function formatTimeM(s){if(!s||!isFinite(s))return'0:00';const m=Math.floor(s/60
 function buildM(){
   totalAudiosM=0;MEDIUM_DATA.forEach(u=>totalAudiosM+=u.audios.length);
   totalElM.textContent=totalAudiosM;heroTotalM.textContent=totalAudiosM;
-  MEDIUM_DATA.forEach((unit,ui)=>{
+  // Hero entrance runs immediately on enter (as before); heavy sectors stream below.
+  initHeroM();
+  // First-enter build is chunked (1 unit/frame) to avoid long tasks on mobile.
+  _buildChunkedM(0);
+}
+
+function _buildChunkedM(start){
+  const end=Math.min(start+1,MEDIUM_DATA.length);
+  for(let ui=start;ui<end;ui++) buildUnitM(MEDIUM_DATA[ui],ui);
+  if(end<MEDIUM_DATA.length){
+    // Double-rAF: let the browser paint streamed sectors + run hero tween before next chunk.
+    if(window.requestAnimationFrame){ requestAnimationFrame(function(){requestAnimationFrame(function(){_buildChunkedM(end);});}); }
+    else{ setTimeout(function(){_buildChunkedM(end);},16); }
+    return;
+  }
+  saveProgressM();initInteractionsM();initAnimationsM();
+  try{npBuildJump('viewMedium','appM');}catch(e){console.error(e);}
+}
+
+function buildUnitM(unit,ui){
     const done=unit.audios.filter(a=>completedSetM.has(a.id)).length;
     const pct=unit.audios.length?(done/unit.audios.length*100):0;
     const unitEl=document.createElement('div');
@@ -2878,9 +2921,8 @@ function buildM(){
         <div class="hide-wrap" style="display:none;padding:0 12px 12px;text-align:center"><button class="hide-btn">◼ RE-ENCRYPT</button></div>`;
       body.appendChild(card);
     });
-  });
-  saveProgressM();initInteractionsM();initAnimationsM();
 }
+
 function initInteractionsM(){
   viewMedium.querySelectorAll('.unit-header').forEach(h=>{
     const toggle=()=>{
@@ -3157,6 +3199,9 @@ function initAnimationsM(){
     const scroller=document.documentElement;
     window.addEventListener('scroll',()=>headerElM.classList.toggle('scrolled',scrollY>18),{passive:true});
   }catch(e){}
+}
+
+function initHeroM(){
   gsap.fromTo('#viewMedium .hero',{opacity:0,y:16},{opacity:1,y:0,duration:.6,ease:'power3.out',delay:.08});
 }
 /* buildM() is called lazily by the router on first view enter */
@@ -3197,8 +3242,8 @@ function initAnimationsM(){
     if(cur==='medium') pauseLevel('medium');
     Object.keys(views).forEach(function(k){views[k].hidden=(k!==name);});
     document.body.setAttribute('data-level',name);
-    if(name==='intro'&&!built.intro){built.intro=true;try{buildI();npBuildJump('viewIntro','appI');}catch(e){console.error(e);}}
-    if(name==='medium'&&!built.medium){built.medium=true;try{buildM();npBuildJump('viewMedium','appM');}catch(e){console.error(e);}}
+    if(name==='intro'&&!built.intro){built.intro=true;try{buildI();}catch(e){console.error(e);}}
+    if(name==='medium'&&!built.medium){built.medium=true;try{buildM();}catch(e){console.error(e);}}
     if(name==='home') updateHome();
     window.scrollTo(0,0);
   };
@@ -3451,6 +3496,10 @@ body[data-level="medium"] .logo.logo-img{box-shadow:0 0 14px rgba(0,255,136,.35)
 .home-card-medium .home-card-icon{box-shadow:0 0 12px rgba(0,255,136,.35)}
 .hero-logo{width:72px;height:72px;border-radius:18px;object-fit:cover;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);border:2px solid rgba(255,255,255,.65)}
 .hero-logo-medium{box-shadow:0 0 20px rgba(0,255,136,.35);border-color:rgba(0,255,136,.4)}
+/* Perf: promote fixed full-viewport decorative layers to their own composite
+   layer so scroll/build repaints don't re-rasterize them (mobile GPUs). */
+body[data-level="intro"]::before{transform:translateZ(0)}
+body[data-level="medium"]::before{transform:translateZ(0)}
 @media(max-width:640px){.hero-logo{width:56px;height:56px;border-radius:14px}}</style>
 <script>
 /* ============ HERO QUOTES: one random line per page load ============ */
