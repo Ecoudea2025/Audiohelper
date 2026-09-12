@@ -3554,18 +3554,25 @@ body[data-level="medium"] .theme-toggle:hover{border-color:#00FF88;color:#00FF88
 @media (max-width:640px){
   .home-topbar{padding:12px 16px 0}
 }
+</style>
 <style>
 /* ===== Offline PWA bits (appended) ===== */
 #offBadge{position:fixed;left:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:180;
-  display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:99px;
-  background:rgba(12,12,20,.92);color:#E6E6F0;border:1px solid #2A2D4A;
+  display:flex;align-items:center;gap:8px;padding:8px 14px 8px 10px;border-radius:99px;
+  background:rgba(12,12,20,.88);color:#F1F5F9;border:1px solid rgba(255,255,255,.14);
   font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 4px 16px rgba(0,0,0,.25);
+  backdrop-filter:blur(12px) saturate(1.3);-webkit-backdrop-filter:blur(12px) saturate(1.3);
+  box-shadow:0 6px 24px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08);
   opacity:1;transform:none;transition:opacity .4s,transform .4s}
-#offBadge.hide{opacity:0;pointer-events:none;transform:translateY(8px)}
-#offBadge .dot{width:8px;height:8px;border-radius:50%;background:#FFD600;flex-shrink:0}
-#offBadge.on .dot{background:#00FF88}
-#offBadge.off .dot{background:#FF2B2B}
+#offBadge.hide{opacity:0;pointer-events:none;transform:translateY(10px) scale(.96)}
+#offBadge:not(.hide){animation:offPop .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes offPop{from{opacity:0;transform:translateY(12px) scale(.94)}to{opacity:1;transform:none}}
+#offBadge .dot{width:9px;height:9px;border-radius:50%;background:#FFD600;flex-shrink:0;position:relative}
+#offBadge.on .dot{background:#00FF88;animation:offPulseG 2s ease-in-out infinite}
+#offBadge.off .dot{background:#FF2B2B;animation:offPulseR 1.4s ease-in-out infinite}
+@keyframes offPulseG{0%,100%{box-shadow:0 0 0 0 rgba(0,255,136,.45)}50%{box-shadow:0 0 0 7px rgba(0,255,136,0)}}
+@keyframes offPulseR{0%,100%{box-shadow:0 0 0 0 rgba(255,43,43,.5)}50%{box-shadow:0 0 0 7px rgba(255,43,43,0)}}
+@media(max-width:640px){.offsave{font-size:9px;padding:5px 8px}}
 body.np-on #offBadge{bottom:calc(92px + env(safe-area-inset-bottom))}
 .offsave{flex-shrink:0;margin-left:auto;padding:6px 10px;border-radius:99px;cursor:pointer;
   border:1px solid var(--border);background:var(--surface2);color:var(--text-sec);
@@ -3605,7 +3612,7 @@ body[data-level="medium"] .offsave.done{border-color:#00FF88;color:#00FF88}
   function refreshBadge(){
     var swActive=!!(navigator.serviceWorker&&navigator.serviceWorker.controller);
     if(!navigator.onLine){setBadge('off',swActive?'SIN CONEXIÓN · usando caché':'SIN CONEXIÓN',true);}
-    else if(swActive){setBadge('on','✓ OFFLINE LISTO');}
+    else if(swActive){setBadge('on','OFFLINE LISTO');}
     else{setBadge('','');}
   }
   window.addEventListener('online',refreshBadge);
