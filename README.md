@@ -33,3 +33,13 @@ Audiohelper/
 ```
 
 > Paths are **relative** (`audio/…`), so the page works from any folder, any static host, or GitHub Pages. Keep `index.html` next to the `audio/` folder.
+
+## Offline (PWA)
+
+Open the Pages URL **once while online**: the service worker (`sw.js`) precaches the app shell (HTML, `vendor/` libs, logos, icons) and shows **OFFLINE LISTO** in the badge at the bottom-left.
+
+- Each unit header has a **⬇ Offline** button that downloads just that unit's MP3s (~5 MB) into the cache. Anything you play is also cached automatically.
+- After that, the page, transcripts, vocabulary and saved audios work **with no connection** (seek included — the worker answers Range requests with `206`).
+- Animations/libs are bundled in `vendor/` (gsap, lenis, anime), so they work offline too. Google Fonts degrade gracefully to system fonts.
+- iOS notes: use **Share → Add to Home Screen** for the most persistent install, and ask the browser for persistent storage when prompted. The system may evict cached audios if storage runs out or after long disuse — re-tap ⬇ Offline while online to restore.
+- New deploys show a *“Nueva versión lista → Recargar”* toast (no forced reloads, to avoid iOS reload loops).

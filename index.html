@@ -4,13 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" type="image/png" href="logo-home.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#5B5BF6">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="CD Market">
 <title>CD Market — Listening Course</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.27/bundled/lenis.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" defer></script>
+<script src="vendor/gsap.min.js" defer></script>
+<script src="vendor/lenis.min.js" defer></script>
+<script src="vendor/anime.min.js" defer></script>
 <script>
 /* Perf/offline fallback: if a CDN lib failed to load (offline file:// use),
    install a minimal same-shape gsap shim that applies final states at once,
@@ -3547,7 +3554,200 @@ body[data-level="medium"] .theme-toggle:hover{border-color:#00FF88;color:#00FF88
 @media (max-width:640px){
   .home-topbar{padding:12px 16px 0}
 }
+<style>
+/* ===== Offline PWA bits (appended) ===== */
+#offBadge{position:fixed;left:12px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:180;
+  display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:99px;
+  background:rgba(12,12,20,.92);color:#E6E6F0;border:1px solid #2A2D4A;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 4px 16px rgba(0,0,0,.25);
+  opacity:1;transform:none;transition:opacity .4s,transform .4s}
+#offBadge.hide{opacity:0;pointer-events:none;transform:translateY(8px)}
+#offBadge .dot{width:8px;height:8px;border-radius:50%;background:#FFD600;flex-shrink:0}
+#offBadge.on .dot{background:#00FF88}
+#offBadge.off .dot{background:#FF2B2B}
+body.np-on #offBadge{bottom:calc(92px + env(safe-area-inset-bottom))}
+.offsave{flex-shrink:0;margin-left:auto;padding:6px 10px;border-radius:99px;cursor:pointer;
+  border:1px solid var(--border);background:var(--surface2);color:var(--text-sec);
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;white-space:nowrap}
+.offsave:hover{border-color:var(--accent);color:var(--accent)}
+.offsave:disabled{opacity:.7;cursor:wait}
+.offsave.done{border-color:#10B981;color:#10B981}
+body[data-level="medium"] .offsave.done{border-color:#00FF88;color:#00FF88}
+#offToast{position:fixed;left:50%;transform:translate(-50%,20px);bottom:calc(20px + env(safe-area-inset-bottom));z-index:300;
+  display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;opacity:0;pointer-events:none;
+  background:#0F172A;color:#fff;font-size:13px;font-weight:600;box-shadow:0 12px 40px rgba(0,0,0,.35);
+  transition:opacity .3s,transform .3s;max-width:min(92vw,480px)}
+#offToast.show{opacity:1;pointer-events:auto;transform:translate(-50%,0)}
+#offToast button{padding:7px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:800;font-size:12px;
+  background:#00FF88;color:#050508;font-family:inherit}
 </style>
+<div id="offBadge" class="hide" role="status" aria-live="polite"><span class="dot"></span><span id="offBadgeTx"></span></div>
+<div id="offToast"><span id="offToastTx">Nueva versión disponible</span><button id="offToastBtn">Recargar</button></div>
+<script>
+/* ============ OFFLINE PWA MODULE (badge + save-unit + SW registration) ============ */
+(function(){
+  'use strict';
+  var badge=document.getElementById('offBadge'),badgeTx=document.getElementById('offBadgeTx');
+  var toast=document.getElementById('offToast'),toastBtn=document.getElementById('offToastBtn');
+
+  function setBadge(mode,text,sticky){
+    badge.classList.remove('on','off');
+    if(mode)badge.classList.add(mode);
+    badgeTx.textContent=text;
+    // Only demand attention when offline. Online states fade away after 4s;
+    // plain-online (no SW yet) never shows at all.
+    if(badge._t)clearTimeout(badge._t);
+    if(sticky){badge.classList.remove('hide');}
+    else if(text){badge.classList.remove('hide');badge._t=setTimeout(function(){badge.classList.add('hide');},4000);}
+    else{badge.classList.add('hide');}
+  }
+  function refreshBadge(){
+    var swActive=!!(navigator.serviceWorker&&navigator.serviceWorker.controller);
+    if(!navigator.onLine){setBadge('off',swActive?'SIN CONEXIÓN · usando caché':'SIN CONEXIÓN',true);}
+    else if(swActive){setBadge('on','✓ OFFLINE LISTO');}
+    else{setBadge('','');}
+  }
+  window.addEventListener('online',refreshBadge);
+  window.addEventListener('offline',refreshBadge);
+
+  // Ask for persistent storage (iOS: reduces odds of cache eviction).
+  if(navigator.storage&&navigator.storage.persist){
+    navigator.storage.persist().catch(function(){});
+  }
+
+  // ---- Service worker registration (http/https only; file:// keeps working without SW)
+  var canSW=('serviceWorker' in navigator)&&/^https?:$/.test(location.protocol);
+  if(canSW){
+    var hadController=!!navigator.serviceWorker.controller;
+    navigator.serviceWorker.register('./sw.js').then(function(reg){
+      refreshBadge();
+      // Update prompt (no auto skipWaiting -> avoids iOS reload loops).
+      function watchUpdate(worker){
+        if(!worker)return;
+        worker.addEventListener('statechange',function(){
+          if(worker.state==='installed'&&navigator.serviceWorker.controller){
+            document.getElementById('offToastTx').textContent='Nueva versión lista';
+            toast.classList.add('show');
+          }
+        });
+      }
+      if(reg.waiting)watchUpdate(reg.waiting);
+      reg.addEventListener('updatefound',function(){watchUpdate(reg.installing);});
+      toastBtn.addEventListener('click',function(){
+        if(reg.waiting){reg.waiting.postMessage('SKIP_WAITING');}
+        else{location.reload();}
+      });
+      var reloaded=false;
+      navigator.serviceWorker.addEventListener('controllerchange',function(){
+        if(reloaded)return;reloaded=true;location.reload();
+      });
+      if(!hadController&&reg.active)refreshBadge();
+    }).catch(function(){refreshBadge();});
+    navigator.serviceWorker.ready.then(refreshBadge).catch(function(){});
+  }else{
+    refreshBadge();
+  }
+  refreshBadge();
+
+  // ---- Per-unit "save offline" ----
+  function unitFiles(level,unitNum){
+    var files=[];
+    try{
+      if(level==='intro'&&typeof INTRO_DATA!=='undefined'){
+        var u=INTRO_DATA.filter(function(x){return x.unitNumber===unitNum;})[0];
+        if(u)u.audios.forEach(function(a){
+          var p=(typeof resolveAudioPathI==='function')?resolveAudioPathI(unitNum,a.fileName)[0]:null;
+          if(!p){var cd=unitNum<=6?'audio/intro-cd1':'audio/intro-cd2';var suf=(unitNum===7||unitNum===8)?' Course book':'';p=cd+'/'+a.fileName+suf+'.mp3';}
+          files.push(encodeURI(p));
+        });
+      }
+      if(level==='medium'&&typeof MEDIUM_DATA!=='undefined'){
+        var m=MEDIUM_DATA.filter(function(x){return x.unitNumber===unitNum;})[0];
+        if(m)m.audios.forEach(function(a){
+          var q=(typeof resolveAudioPathM==='function')?resolveAudioPathM(unitNum,a.fileName)[0]:null;
+          if(!q){var cd2=unitNum<=6?'audio/medium-cd1':'audio/medium-cd2';q=cd2+'/'+a.fileName+'.mp3';}
+          files.push(encodeURI(q));
+        });
+      }
+    }catch(e){}
+    return files;
+  }
+  function cacheReady(){return canSW&&!!(window.caches&&navigator.serviceWorker&&navigator.serviceWorker.controller);}
+  function checkUnit(btn,level,unitNum,files){
+    if(!cacheReady()){btn.textContent='⬇ Solo online';btn.disabled=true;btn.title='Abre la página por HTTPS para activar el caché offline';return;}
+    var done=0,checked=0;
+    if(!files.length){btn.textContent='—';btn.disabled=true;return;}
+    files.forEach(function(f){
+      caches.match(f).then(function(hit){if(hit)done++;}).catch(function(){}).then(function(){
+        checked++;
+        if(checked===files.length){
+          if(done===files.length){btn.textContent='✓ Offline';btn.classList.add('done');}
+          else if(done>0){btn.textContent='✓ '+done+'/'+files.length;}
+          else{btn.textContent='⬇ Offline';}
+        }
+      });
+    });
+  }
+  function attachSaveBtn(unitEl,level){
+    if(!unitEl||unitEl.querySelector('.offsave'))return;
+    var header=unitEl.querySelector('.unit-header');
+    if(!header)return;
+    var unitNum=parseInt(unitEl.dataset.unitNum,10);
+    if(!unitNum)return;
+    var files=unitFiles(level,unitNum);
+    var btn=document.createElement('button');
+    btn.className='offsave';btn.type='button';btn.title='Descarga los audios de esta unidad para usarlos sin conexión';
+    btn.textContent='…';
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      if(btn.disabled)return;
+      btn.disabled=true;
+      var i=0,ok=0;
+      function next(){
+        if(i>=files.length){
+          btn.disabled=false;
+          btn.textContent=(ok===files.length)?'✓ Offline':'✓ '+ok+'/'+files.length+' (reintentar)';
+          if(ok===files.length)btn.classList.add('done');
+          refreshBadge();
+          return;
+        }
+        btn.textContent='⏳ '+(i+1)+'/'+files.length;
+        fetch(files[i],{cache:'reload'}).then(function(r){
+          if(r&&(r.status===200||r.status===206))ok++;
+          i++;next();
+        }).catch(function(){i++;next();});
+      }
+      // iOS needs the gesture chain kept short: start immediately.
+      next();
+    });
+    // Put before the chevron so layout stays stable.
+    var chev=header.querySelector('.unit-chevron');
+    if(chev)header.insertBefore(btn,chev);else header.appendChild(btn);
+    checkUnit(btn,level,unitNum,files);
+  }
+  function scanExisting(){
+    document.querySelectorAll('#appI .unit').forEach(function(u){attachSaveBtn(u,'intro');});
+    document.querySelectorAll('#appM .unit').forEach(function(u){attachSaveBtn(u,'medium');});
+  }
+  // Units are built chunked (1/frame): observe and attach as they appear.
+  var mo;
+  if(window.MutationObserver){
+    mo=new MutationObserver(function(){scanExisting();});
+    ['appI','appM'].forEach(function(id){
+      var n=document.getElementById(id);
+      if(n)mo.observe(n,{childList:true,subtree:true});
+    });
+  }
+  // Re-check states when coming back online / SW takes control.
+  window.addEventListener('online',function(){setTimeout(scanExisting,500);});
+  if(canSW&&navigator.serviceWorker){
+    navigator.serviceWorker.ready.then(function(){setTimeout(scanExisting,500);}).catch(function(){});
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',scanExisting);}
+  else{scanExisting();}
+})();
+</script>
 
 </body>
 </html>
