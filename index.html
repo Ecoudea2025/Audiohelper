@@ -3580,7 +3580,9 @@ body.np-on #offBadge{bottom:calc(92px + env(safe-area-inset-bottom))}
 .offsave:hover{border-color:var(--accent);color:var(--accent)}
 .offsave:disabled{opacity:.7;cursor:wait}
 .offsave.done{border-color:#10B981;color:#10B981}
+.offsave.warn{border-color:#EF4444;color:#EF4444}
 body[data-level="medium"] .offsave.done{border-color:#00FF88;color:#00FF88}
+body[data-level="medium"] .offsave.warn{border-color:#FF2B2B;color:#FF2B2B}
 #offToast{position:fixed;left:50%;transform:translate(-50%,20px);bottom:calc(20px + env(safe-area-inset-bottom));z-index:300;
   display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;opacity:0;pointer-events:none;
   background:#0F172A;color:#fff;font-size:13px;font-weight:600;box-shadow:0 12px 40px rgba(0,0,0,.35);
@@ -3681,21 +3683,37 @@ body[data-level="medium"] .offsave.done{border-color:#00FF88;color:#00FF88}
     return files;
   }
   function cacheReady(){return canSW&&!!(window.caches&&navigator.serviceWorker&&navigator.serviceWorker.controller);}
-  function checkUnit(btn,level,unitNum,files){
-    if(!cacheReady()){btn.textContent='⬇ Solo online';btn.disabled=true;btn.title='Abre la página por HTTPS para activar el caché offline';return;}
+  // Audio cache name — keep in sync with sw.js (AUDIO).
+  var AUDIO_CACHE='cdm-audio-v1';
+  // Paint button from the REAL cache state. Re-runnable: revalidates any time
+  // (e.g. user cleared site data). Overlapping paints can't race via _paintId.
+  function paintBtn(btn){
+    var files=btn._files||[];
+    if(!cacheReady()){btn.textContent='⬇ Solo online';btn.disabled=true;btn.classList.remove('done');btn._saved=false;btn.title='Abre la página por HTTPS para activar el caché offline';return;}
+    if(!files.length){btn.textContent='—';btn.disabled=true;btn._saved=false;return;}
+    // NOTE: no _busy early-return — overlapping paints are resolved by _paintId
+    // (latest wins), and the download loop never paints mid-flight.
+    btn.disabled=true;
+    var myId=(btn._paintId=(btn._paintId||0)+1);
     var done=0,checked=0;
-    if(!files.length){btn.textContent='—';btn.disabled=true;return;}
     files.forEach(function(f){
       caches.match(f).then(function(hit){if(hit)done++;}).catch(function(){}).then(function(){
+        if(myId!==btn._paintId)return; // superseded by a newer paint
         checked++;
         if(checked===files.length){
-          if(done===files.length){btn.textContent='✓ Offline';btn.classList.add('done');}
-          else if(done>0){btn.textContent='✓ '+done+'/'+files.length;}
-          else{btn.textContent='⬇ Offline';}
+          btn.disabled=!!btn._busy; // stay disabled while a download/delete runs
+          btn._saved=(done===files.length);
+          btn._done=done;btn._total=files.length;
+          btn.classList.toggle('done',btn._saved);
+          btn.classList.remove('warn');
+          if(btn._saved){btn.textContent='✓ Offline';btn.title='Guardada sin conexión — toca para borrarla del caché';}
+          else if(done>0){btn.textContent='✓ '+done+'/'+files.length;btn.title='Parcialmente guardada — toca para completar';}
+          else{btn.textContent='⬇ Offline';btn.title='Descarga los audios de esta unidad para usarlos sin conexión';}
         }
       });
     });
   }
+  function checkUnit(btn,level,unitNum,files){btn._files=files;paintBtn(btn);}
   function attachSaveBtn(unitEl,level){
     if(!unitEl||unitEl.querySelector('.offsave'))return;
     var header=unitEl.querySelector('.unit-header');
@@ -3708,15 +3726,52 @@ body[data-level="medium"] .offsave.done{border-color:#00FF88;color:#00FF88}
     btn.textContent='…';
     btn.addEventListener('click',function(e){
       e.stopPropagation();
-      if(btn.disabled)return;
-      btn.disabled=true;
+      if(btn.disabled||btn._busy)return;
+      var files=btn._files||[];
+      // State 1: saved -> first tap arms delete-confirm, second tap deletes.
+      if(btn._saved){
+        if(btn._confirmArmed){
+          if(btn._confirmT)clearTimeout(btn._confirmT);
+          btn._confirmArmed=false;
+          btn._busy=true;btn.disabled=true;btn.textContent='⏳ Borrando…';
+          caches.open(AUDIO_CACHE).then(function(c){
+            return Promise.all(files.map(function(f){return c.delete(f).catch(function(){return false;});}));
+          }).catch(function(){}).then(function(){
+            btn._busy=false;
+            paintBtn(btn);
+            refreshBadge();
+          });
+        }else{
+          btn._confirmArmed=true;
+          btn.classList.add('warn');
+          btn.textContent='✕ ¿Borrar?';
+          btn.title='Toca de nuevo para borrar los audios guardados';
+          if(btn._confirmT)clearTimeout(btn._confirmT);
+          btn._confirmT=setTimeout(function(){btn._confirmArmed=false;paintBtn(btn);},3000);
+        }
+        return;
+      }
+      // State 2: not saved -> download missing files.
+      if(btn._confirmArmed&&btn._confirmT){clearTimeout(btn._confirmT);btn._confirmArmed=false;}
+      btn._busy=true;btn.disabled=true;
       var i=0,ok=0;
+      // The SW caches MP3s asynchronously (put is not awaited before the
+      // fetch resolves), so trailing puts may land after the loop ends.
+      // Settle: repaint until the count stabilises (max ~5s), then finish.
+      function settle(tries,last){
+        paintBtn(btn);
+        setTimeout(function(){
+          var cur=(btn._done===undefined?-1:btn._done);
+          if(cur===btn._total||cur===last||tries<=1){
+            btn._busy=false;
+            paintBtn(btn);
+            refreshBadge();
+          }else{settle(tries-1,cur);}
+        },800);
+      }
       function next(){
         if(i>=files.length){
-          btn.disabled=false;
-          btn.textContent=(ok===files.length)?'✓ Offline':'✓ '+ok+'/'+files.length+' (reintentar)';
-          if(ok===files.length)btn.classList.add('done');
-          refreshBadge();
+          settle(6,-1); // repaint until SW-side puts land (see above)
           return;
         }
         btn.textContent='⏳ '+(i+1)+'/'+files.length;
@@ -3746,8 +3801,22 @@ body[data-level="medium"] .offsave.done{border-color:#00FF88;color:#00FF88}
       if(n)mo.observe(n,{childList:true,subtree:true});
     });
   }
-  // Re-check states when coming back online / SW takes control.
-  window.addEventListener('online',function(){setTimeout(scanExisting,500);});
+  // Re-check states when coming back online / SW takes control,
+  // and whenever the user returns to the page (they may have cleared data).
+  function repaintAll(){
+    document.querySelectorAll('.offsave').forEach(function(b){paintBtn(b);});
+  }
+  window.addEventListener('online',function(){setTimeout(function(){scanExisting();repaintAll();},500);});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)repaintAll();});
+  window.addEventListener('focus',function(){repaintAll();});
+  // Revalidate a unit's button when its header is toggled (no interference:
+  // passive listener, the app's own toggle handler still runs).
+  document.addEventListener('click',function(e){
+    var h=e.target&&e.target.closest?e.target.closest('.unit-header'):null;
+    if(!h)return;
+    var b=h.querySelector('.offsave');
+    if(b)setTimeout(function(){paintBtn(b);},450);
+  });
   if(canSW&&navigator.serviceWorker){
     navigator.serviceWorker.ready.then(function(){setTimeout(scanExisting,500);}).catch(function(){});
   }
