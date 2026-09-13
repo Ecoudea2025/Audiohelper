@@ -3611,7 +3611,14 @@ body[data-level="medium"] .offsave.warn{border-color:#FF2B2B;color:#FF2B2B}
     else if(text){badge.classList.remove('hide');badge._t=setTimeout(function(){badge.classList.add('hide');},4000);}
     else{badge.classList.add('hide');}
   }
+  // Native-app mode (Capacitor WebView): the app is served from bundled local
+  // assets at https://localhost/ (no port), so audios are ALWAYS available —
+  // no service worker needed (it would only risk serving stale cached shells
+  // after app updates). Dev servers always use an explicit port (:8901…),
+  // so this check never misfires on web.
+  var isNative=(location.hostname==='localhost'&&!location.port);
   function refreshBadge(){
+    if(isNative){setBadge('','');return;} // nothing to report: all bundled
     var swActive=!!(navigator.serviceWorker&&navigator.serviceWorker.controller);
     if(!navigator.onLine){setBadge('off',swActive?'SIN CONEXIÓN · usando caché':'SIN CONEXIÓN',true);}
     else if(swActive){setBadge('on','OFFLINE LISTO');}
@@ -3621,12 +3628,12 @@ body[data-level="medium"] .offsave.warn{border-color:#FF2B2B;color:#FF2B2B}
   window.addEventListener('offline',refreshBadge);
 
   // Ask for persistent storage (iOS: reduces odds of cache eviction).
-  if(navigator.storage&&navigator.storage.persist){
+  if(!isNative&&navigator.storage&&navigator.storage.persist){
     navigator.storage.persist().catch(function(){});
   }
 
   // ---- Service worker registration (http/https only; file:// keeps working without SW)
-  var canSW=('serviceWorker' in navigator)&&/^https?:$/.test(location.protocol);
+  var canSW=('serviceWorker' in navigator)&&/^https?:$/.test(location.protocol)&&!isNative;
   if(canSW){
     var hadController=!!navigator.serviceWorker.controller;
     navigator.serviceWorker.register('./sw.js').then(function(reg){
@@ -3689,6 +3696,14 @@ body[data-level="medium"] .offsave.warn{border-color:#FF2B2B;color:#FF2B2B}
   // (e.g. user cleared site data). Overlapping paints can't race via _paintId.
   function paintBtn(btn){
     var files=btn._files||[];
+    // Native app: audios ship inside the APK — always available, nothing to
+    // download or delete. Show it as such and keep the button inert.
+    if(isNative){
+      btn.textContent='✓ En app';btn.disabled=true;btn._saved=true;
+      btn.classList.add('done');btn.classList.remove('warn');
+      btn.title='Los audios vienen incluidos en la app';
+      return;
+    }
     if(!cacheReady()){btn.textContent='⬇ Solo online';btn.disabled=true;btn.classList.remove('done');btn._saved=false;btn.title='Abre la página por HTTPS para activar el caché offline';return;}
     if(!files.length){btn.textContent='—';btn.disabled=true;btn._saved=false;return;}
     // NOTE: no _busy early-return — overlapping paints are resolved by _paintId

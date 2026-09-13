@@ -26,3 +26,21 @@ _router.js
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Capacitor / Android build outputs (source stays in repo root; regenerate www/)
+node_modules/
+www/
+android/app/build/
+android/app/.cxx/
+android/app/src/main/assets/
+android/.gradle/
+android/local.properties
+android/capacitor-cordova-android-plugins/
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# Local build helpers/logs (machine-specific paths)
+build-apk.bat
+build.log

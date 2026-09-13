@@ -1,0 +1,32 @@
+{
+  "name": "audiohelper",
+  "version": "1.0.0",
+  "description": "Interactive listening practice for the **CD Market** English course. Two levels in a single page — no server, no build step, works offline.",
+  "main": "sw.js",
+  "scripts": {
+    "app:copy": "node scripts/copy-www.js",
+    "app:sync": "npm run app:copy && npx cap sync android",
+    "app:apk": "npm run app:sync && npm run app:apk-only",
+    "app:apk-only": "cmd /c \"cd android && gradlew.bat assembleDebug\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ecoudea2025/Audiohelper.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Ecoudea2025/Audiohelper/issues"
+  },
+  "homepage": "https://github.com/Ecoudea2025/Audiohelper#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}
