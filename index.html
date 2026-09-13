@@ -3730,6 +3730,7 @@ body[data-level="medium"] .offsave.warn{border-color:#FF2B2B;color:#FF2B2B}
   }
   function checkUnit(btn,level,unitNum,files){btn._files=files;paintBtn(btn);}
   function attachSaveBtn(unitEl,level){
+    if(isNative)return; // app bundles all audio — no download button at all
     if(!unitEl||unitEl.querySelector('.offsave'))return;
     var header=unitEl.querySelector('.unit-header');
     if(!header)return;
@@ -3837,6 +3838,107 @@ body[data-level="medium"] .offsave.warn{border-color:#FF2B2B;color:#FF2B2B}
   }
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',scanExisting);}
   else{scanExisting();}
+})();
+</script>
+<script>
+/* ============ SYSTEM MEDIA CONTROLS + AUTO-ADVANCE (MediaSession bridge) ============
+   - Publishes each track to the OS (Android notification / desktop media hub)
+     with title, unit and artwork, plus play/pause/prev/next handlers.
+   - When a track ends, playback continues with the next audio IN ORDER
+     within the same unit (skipping search-hidden cards). Stops at unit end.
+   - Purely additive: reuses the existing play buttons + toggleExpandI/M.
+   - If play() is rejected (autoplay policy), the player's own catch applies
+     and playback simply stops — previous behavior preserved. */
+(function(){
+  'use strict';
+  if(!window.__npBind)return; // player not present
+  var MS=(typeof navigator!=='undefined'&&'mediaSession' in navigator)?navigator.mediaSession:null;
+  var msAudio=null, msTimer=null;
+  function clearTimer(){if(msTimer){clearInterval(msTimer);msTimer=null;}}
+  function artwork(level){
+    return [{src:(level==='medium')?'logo-medium.png':'logo-intro.png',sizes:'256x384',type:'image/png'}];
+  }
+  function trackInfo(level,card){
+    var title='',unit='';
+    try{
+      var t=card.querySelector('.audio-title');
+      title=t?t.innerText.trim().replace(/\s+/g,' '):'';
+    }catch(e){}
+    try{
+      var u=card.closest('.unit'),nm=u?u.querySelector('.unit-name'):null;
+      unit=nm?nm.textContent.trim():'';
+    }catch(e2){}
+    return {title:title||card.dataset.audioId||'Audio',
+      artist:((level==='medium')?'Medium · ':'Level I · ')+(unit||'CD Market'),
+      album:'CD Market — Listening Course'};
+  }
+  function updatePosition(){
+    if(!MS||!msAudio)return;
+    try{
+      var d=msAudio.duration;
+      if(d&&isFinite(d))MS.setPositionState({duration:d,position:Math.min(msAudio.currentTime||0,d),playbackRate:1});
+    }catch(e){}
+  }
+  function armTimer(){
+    clearTimer();
+    if(!MS||!msAudio)return;
+    msTimer=setInterval(function(){if(msAudio&&!msAudio.paused)updatePosition();},5000);
+  }
+  // Ordered step within the same unit body, skipping search-hidden cards.
+  function stepCtx(ctx,dir){
+    if(!ctx||!ctx.card||!ctx.card.isConnected)return false;
+    try{
+      var list=Array.prototype.slice.call(ctx.card.parentElement.querySelectorAll('.audio-card'))
+        .filter(function(c){return !c.classList.contains('hidden');});
+      var nxt=list[list.indexOf(ctx.card)+dir];
+      if(!nxt)return false;
+      var unit=nxt.closest('.unit');
+      if(unit&&!unit.classList.contains('open'))unit.querySelector('.unit-header').click();
+      setTimeout(function(){
+        try{
+          if(!nxt.isConnected)return;
+          if(!nxt.classList.contains('expanded')){
+            (ctx.level==='medium'?toggleExpandM:toggleExpandI)(nxt);
+          }
+          nxt.scrollIntoView({behavior:'smooth',block:'center'});
+          var b=nxt.querySelector('.play-btn');
+          if(b)b.click();
+        }catch(e){}
+      },380);
+      return true;
+    }catch(e){return false;}
+  }
+  if(MS){
+    try{
+      MS.setActionHandler('play',function(){var t=document.getElementById('npToggle');if(t)t.click();});
+      MS.setActionHandler('pause',function(){var t=document.getElementById('npToggle');if(t)t.click();});
+      MS.setActionHandler('previoustrack',function(){if(window.__msCtx)stepCtx(window.__msCtx,-1);});
+      MS.setActionHandler('nexttrack',function(){if(window.__msCtx)stepCtx(window.__msCtx,1);});
+    }catch(e){}
+  }
+  var _origBind=window.__npBind;
+  window.__npBind=function(level,card,audioEl){
+    _origBind(level,card,audioEl);
+    try{
+      var ctx={level:level,card:card};
+      window.__msCtx=ctx; // current track context (also used by action handlers)
+      window.__msAudio=audioEl; // debug/test handle
+      msAudio=audioEl;
+      if(MS){
+        var info=trackInfo(level,card);
+        try{MS.metadata=new MediaMetadata({title:info.title,artist:info.artist,album:info.album,artwork:artwork(level)});}catch(e){}
+        updatePosition();armTimer();
+      }
+      audioEl.addEventListener('loadedmetadata',function(){if(msAudio===audioEl)updatePosition();});
+      audioEl.addEventListener('play',function(){if(msAudio===audioEl){armTimer();updatePosition();}});
+      audioEl.addEventListener('pause',function(){if(msAudio===audioEl){clearTimer();updatePosition();}});
+      audioEl.addEventListener('ended',function(){
+        // Let completion-marking settle, then continue in order.
+        // Guarded: only advance if the user hasn't moved to another track.
+        setTimeout(function(){if(msAudio===audioEl)stepCtx(ctx,1);},700);
+      });
+    }catch(e){}
+  };
 })();
 </script>
 

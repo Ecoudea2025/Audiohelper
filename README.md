@@ -50,7 +50,10 @@ Open the Pages URL **once while online**: the service worker (`sw.js`) precaches
 
 ## Android app (Fase 2 — Capacitor, offline permanente)
 
-The same web app wrapped as a native app (`com.cdmarket.listening`, **CD Market**). All 155 MP3s ship **inside the APK (~131 MB)** — no cache to evict, no first-visit needed. In-app, the ⬇ buttons show **✓ En app** and the service worker stays off (bundled files are always fresh).
+The same web app wrapped as a native app (`com.cdmarket.listening`, **CD Market**). All 155 MP3s ship **inside the APK (~131 MB)** — no cache to evict, no first-visit needed. There is no ⬇ button in the app (everything is already bundled).
+
+- **System notification + Bluetooth/headset controls**: each track publishes title, unit and artwork via MediaSession — play/pause and ⏮ ⏭ work from the notification shade, lock screen and headset buttons.
+- **Auto-play in order**: when a track ends, the next audio in the same unit starts automatically (stops at the end of the unit).
 
 ### For students: install
 
