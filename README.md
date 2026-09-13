@@ -52,8 +52,9 @@ Open the Pages URL **once while online**: the service worker (`sw.js`) precaches
 
 The same web app wrapped as a native app (`com.cdmarket.listening`, **CD Market**). All 155 MP3s ship **inside the APK (~131 MB)** — no cache to evict, no first-visit needed. There is no ⬇ button in the app (everything is already bundled).
 
-- **System notification + Bluetooth/headset controls**: each track publishes title, unit and artwork via MediaSession — play/pause and ⏮ ⏭ work from the notification shade, lock screen and headset buttons.
+- **System notification + Bluetooth/headset controls**: each track publishes title, unit and artwork via a native notification (`CdmMedia` plugin: framework MediaSession + MediaStyle, no extra dependencies). Play/pause and ⏮ ⏭ work from the notification shade, lock screen and headset buttons — including permission request on Android 13+.
 - **Auto-play in order**: when a track ends, the next audio in the same unit starts automatically (stops at the end of the unit).
+- **Animated boot intro**: branded splash overlay (logo pop + equalizer + shimmer) shown only in the app while it loads.
 
 ### For students: install
 
